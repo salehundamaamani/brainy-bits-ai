@@ -2,7 +2,7 @@
 A emotion detection and classroom monitoring app 
 
 ## Project structure
-
+```python
 brainy-bits-ai/
 ├── data/
 ├── notebooks/
@@ -11,7 +11,7 @@ brainy-bits-ai/
 ├── README.md
 ├── requirements.txt
 └── .gitignore
-
+```
 ### Structure description
 1. data/ - to store all the datasets used in the project, can include raw data, preprocessed data, and any other data files.
 2. notebooks/ - to include all the Jupyter Notebooks used for the entire workflow
@@ -20,7 +20,7 @@ brainy-bits-ai/
 
 **Note: Please follow the project structure hierarchy**
 
-JIRA: [text](https://brainy-bits.atlassian.net/jira/software/projects/KAN/boards/1)
+Project management: [JIRA](https://brainy-bits.atlassian.net/jira/software/projects/KAN/boards/1) of the project
 
 Project Team members
 - Prithvika Babu
