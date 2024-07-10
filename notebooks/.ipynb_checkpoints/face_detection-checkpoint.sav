@@ -2,12 +2,12 @@
  "cells": [
   {
    "cell_type": "code",
-   "execution_count": 1,
+   "execution_count": 2,
    "id": "f69fce46-0e11-4747-b095-8aaedef24c21",
    "metadata": {
     "ExecuteTime": {
-     "end_time": "2024-06-23T19:24:02.548526Z",
-     "start_time": "2024-06-23T19:23:21.354345Z"
+     "end_time": "2024-06-11T17:01:35.605957Z",
+     "start_time": "2024-06-11T17:01:23.246883Z"
     }
    },
    "outputs": [
@@ -15,7 +15,7 @@
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "2024-06-23 15:23:22.062 python[2979:132662] WARNING: AVCaptureDeviceTypeExternal is deprecated for Continuity Cameras. Please use AVCaptureDeviceTypeContinuityCamera and add NSCameraUseContinuityCameraDeviceType to your Info.plist.\n"
+      "2024-06-11 13:01:23.519 python[70852:4098825] WARNING: AVCaptureDeviceTypeExternal is deprecated for Continuity Cameras. Please use AVCaptureDeviceTypeContinuityCamera and add NSCameraUseContinuityCameraDeviceType to your Info.plist.\n"
      ]
     },
     {
@@ -25,7 +25,7 @@
      "traceback": [
       "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
       "\u001b[0;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
-      "Cell \u001b[0;32mIn[1], line 22\u001b[0m\n\u001b[1;32m     19\u001b[0m gray \u001b[38;5;241m=\u001b[39m cv2\u001b[38;5;241m.\u001b[39mcvtColor(frame, cv2\u001b[38;5;241m.\u001b[39mCOLOR_BGR2GRAY)\n\u001b[1;32m     21\u001b[0m \u001b[38;5;66;03m# Detect faces in the grayscale frame\u001b[39;00m\n\u001b[0;32m---> 22\u001b[0m faces \u001b[38;5;241m=\u001b[39m detector(gray)\n\u001b[1;32m     24\u001b[0m \u001b[38;5;66;03m# Loop through each detected face\u001b[39;00m\n\u001b[1;32m     25\u001b[0m \u001b[38;5;28;01mfor\u001b[39;00m i, face \u001b[38;5;129;01min\u001b[39;00m \u001b[38;5;28menumerate\u001b[39m(faces):\n\u001b[1;32m     26\u001b[0m     \u001b[38;5;66;03m# Draw a rectangle around the face\u001b[39;00m\n",
+      "Cell \u001b[0;32mIn[2], line 22\u001b[0m\n\u001b[1;32m     19\u001b[0m gray \u001b[38;5;241m=\u001b[39m cv2\u001b[38;5;241m.\u001b[39mcvtColor(frame, cv2\u001b[38;5;241m.\u001b[39mCOLOR_BGR2GRAY)\n\u001b[1;32m     21\u001b[0m \u001b[38;5;66;03m# Detect faces in the grayscale frame\u001b[39;00m\n\u001b[0;32m---> 22\u001b[0m faces \u001b[38;5;241m=\u001b[39m detector(gray)\n\u001b[1;32m     24\u001b[0m \u001b[38;5;66;03m# Loop through each detected face\u001b[39;00m\n\u001b[1;32m     25\u001b[0m \u001b[38;5;28;01mfor\u001b[39;00m i, face \u001b[38;5;129;01min\u001b[39;00m \u001b[38;5;28menumerate\u001b[39m(faces):\n\u001b[1;32m     26\u001b[0m     \u001b[38;5;66;03m# Draw a rectangle around the face\u001b[39;00m\n",
       "\u001b[0;31mKeyboardInterrupt\u001b[0m: "
      ]
     }
