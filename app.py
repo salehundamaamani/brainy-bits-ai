@@ -23,16 +23,6 @@ def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@app.route('/student_list')
-def student_list():
-    students = [
-        {'name': 'John Doe', 'id': '123'},
-        {'name': 'Jane Smith', 'id': '456'},
-        {'name': 'Emily Davis', 'id': '789'},
-    ]
-    return render_template('student_list.html', students=students)
-
-
 if __name__ == '__main__':
     print("Starting the app...")
     check_create_database(db_path)

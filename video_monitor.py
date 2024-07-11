@@ -23,6 +23,22 @@ def get_abs_path(directory, file):
 
 db_path = get_abs_path('data', 'brainy_bits.db')
 
+USER_ID_FILE = get_abs_path('data', 'last_user_id.txt')
+
+
+def generate_user_id():
+    if os.path.exists(USER_ID_FILE):
+        with open(USER_ID_FILE, 'r') as file:
+            last_id = int(file.read().strip())
+    else:
+        last_id = 70000
+    next_id = last_id + 1
+    with open(USER_ID_FILE, 'w') as file:
+        file.write(str(next_id))
+
+    user_id = f'{next_id:05}'
+    return user_id
+
 
 def generate_frames():
     print("Generating the frames...")
@@ -90,6 +106,7 @@ def generate_frames():
                 shape = face_utils.shape_to_np(shape)
 
                 person_id = f"Person {i + 1}"
+                user_id = generate_user_id()
 
                 if person_id not in duration_eyes_closed:
                     duration_eyes_closed[person_id] = 0
@@ -235,7 +252,6 @@ def generate_frames():
     finally:
         cap.release()
 
-        user_id = 4321
         db_conn = connect_to_db(db_path)
         db_cursor = db_conn.cursor()
         print("Starting the data processing...")
@@ -248,7 +264,7 @@ def generate_frames():
                 ''', (user_id, person_id, duration_eyes_closed[person_id], duration_looking_left[person_id],
                       duration_looking_right[person_id], duration_looking_straight[person_id], count_left[person_id],
                       count_right[person_id], count_straight[person_id]))
-                print(f"Inserted eye track data for {person_id}")
+                print(f"Inserted eye track data for {user_id}")
 
             for person_id in emotion_duration["angry"]:
                 db_cursor.execute('''
@@ -258,7 +274,7 @@ def generate_frames():
                       emotion_duration["happy"][person_id], emotion_duration["fear"][person_id],
                       emotion_duration["disgust"][person_id], emotion_duration["neutral"][person_id],
                       emotion_duration["surprise"][person_id]))
-                print(f"Inserted emotion detect data for {person_id}")
+                print(f"Inserted emotion detect data for {user_id}")
 
             for person_id in time_forward_seconds:
                 db_cursor.execute('''
@@ -266,7 +282,7 @@ def generate_frames():
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 ''', (user_id, person_id, time_forward_seconds[person_id], time_left_seconds[person_id],
                       time_right_seconds[person_id], time_up_seconds[person_id], time_down_seconds[person_id]))
-                print(f"Inserted head pose data for {person_id}")
+                print(f"Inserted head pose data for {user_id}")
 
             db_conn.commit()
             print("Data committed to the database.")
