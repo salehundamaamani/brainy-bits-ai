@@ -2,7 +2,7 @@ import os
 import cv2
 import dlib
 import numpy as np
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, jsonify
 import pandas as pd
 from imutils import face_utils
 from scipy.ndimage import zoom
@@ -25,6 +25,23 @@ def classroom_monitoring():
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/data')
+def get_data():
+    data = []
+    with open('data.csv') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            data.append({
+                'date': row['date'],
+                'focused': int(row['focused']),
+                'not_focused': int(row['not_focused'])
+            })
+    return jsonify(data)
 
 def generate_frames():
     # Load data from CSV (example)
@@ -315,6 +332,7 @@ def student_list():
         {'name': 'Emily Davis', 'id': '789'},
     ]
     return render_template('student_list.html', students=students)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
