@@ -1,16 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .chart-container {
+            margin: 20px 0;
+        }
+        .pie-chart {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+        #lineChartContainer {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Dashboard</h1>
-        <button id="homeButton">Home</button>
     </header>
     <main>
         <div class="charts">
@@ -30,44 +43,49 @@
     </main>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const data = [
-                { date: '2024-07-01', focused: 70, not_focused: 30 },
-                { date: '2024-07-02', focused: 60, not_focused: 40 },
-                { date: '2024-07-03', focused: 75, not_focused: 25 },
-                { date: '2024-07-04', focused: 65, not_focused: 35 },
-                { date: '2024-07-05', focused: 80, not_focused: 20 },
-                { date: '2024-07-06', focused: 55, not_focused: 45 },
-                { date: '2024-07-07', focused: 50, not_focused: 50 }
-            ];
+            fetch('/get_data')
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Fetched data:', data);
+                    const focusData = data;
 
-            // Prepare pie chart data for today (latest entry)
-            let todayData = data[data.length - 1];
-            let todayPieData = [
-                { label: "Focused", value: todayData.focused },
-                { label: "Not Focused", value: todayData.not_focused }
-            ];
+                    // Check if data is correctly formatted
+                    if (!Array.isArray(focusData) || !focusData.length) {
+                        throw new Error('Data format is incorrect or empty');
+                    }
 
-            // Prepare pie chart data for weekly average
-            let weeklyData = data.slice(-7);
-            let weeklyFocused = d3.mean(weeklyData, d => d.focused);
-            let weeklyNotFocused = 100 - weeklyFocused;
-            let weeklyPieData = [
-                { label: "Focused", value: weeklyFocused },
-                { label: "Not Focused", value: weeklyNotFocused }
-            ];
+                    // Prepare pie chart data for today (use the fetched data)
+                    let todayPieData = [
+                        { label: "Focused", value: focusData[0].focused },
+                        { label: "Not Focused", value: focusData[0].not_focused }
+                    ];
 
-            // Draw pie charts
-            drawPieChart('#todayChart', todayPieData);
-            drawPieChart('#weeklyChart', weeklyPieData);
+                    // Prepare pie chart data for weekly average
+                    let weeklyFocused = d3.mean(focusData, d => d.focused);
+                    let weeklyNotFocused = 100 - weeklyFocused;
+                    let weeklyPieData = [
+                        { label: "Focused", value: weeklyFocused },
+                        { label: "Not Focused", value: weeklyNotFocused }
+                    ];
 
-            // Draw line chart
-            drawLineChart(data);
+                    // Draw pie charts
+                    drawPieChart('#todayChart', todayPieData);
+                    drawPieChart('#weeklyChart', weeklyPieData);
 
-            // Home button click event
-            document.getElementById('homeButton').addEventListener('click', function() {
-                window.location.href = 'index.html'; // Change this to your home page URL
-            });
+                    // Draw line chart
+                    drawLineChart(focusData);
+
+                    // Home button click event
+                    document.getElementById('homeButton').addEventListener('click', function() {
+                        window.location.href = '/';  // Change this to your home page URL
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
         });
+
 
         function drawPieChart(selector, data) {
             let width = 300, height = 300, radius = Math.min(width, height) / 2;
@@ -164,8 +182,8 @@
                 .text('Not Focused');
         }
     </script>
-<div>
-    <a href="/" class="back-link">Back to Home</a>
-</div>
+    <div>
+        <a href="/" class="back-link">Back to Home</a>
+    </div>
 </body>
-</html> 
+{% endblock %}
