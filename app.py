@@ -1,7 +1,7 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, jsonify
 from video_monitor import get_abs_path
 from db_utils import check_create_database
-
+import sqlite3, os
 app = Flask(__name__)
 
 db_path = get_abs_path('data', 'brainy_bits.db')
@@ -15,6 +15,23 @@ def home():
 @app.route('/classroom_monitoring')
 def classroom_monitoring():
     return render_template('classroom_monitoring.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/data')
+def get_data():
+    data = []
+    with open('data.csv') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            data.append({
+                'date': row['date'],
+                'focused': int(row['focused']),
+                'not_focused': int(row['not_focused'])
+            })
+    return jsonify(data)
 
 
 @app.route('/video_feed')
