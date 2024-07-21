@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response
 from video_monitor import get_abs_path
 from db_utils import check_create_database
 
+
 app = Flask(__name__)
 
 db_path = get_abs_path('data', 'brainy_bits.db')
@@ -21,6 +22,25 @@ def classroom_monitoring():
 def video_feed():
     from video_monitor import generate_frames  # Import inside the function to avoid circular import
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/data')
+def get_data():
+    data = []
+    with open('data.csv') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            data.append({
+                'date': row['date'],
+                'focused': int(row['focused']),
+                'not_focused': int(row['not_focused'])
+            })
+    return jsonify(data)
+
 
 
 if __name__ == '__main__':
