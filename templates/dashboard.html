@@ -42,7 +42,7 @@
         </div>
     </main>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+         document.addEventListener('DOMContentLoaded', function() {
             fetch('/get_data')
                 .then(response => {
                     console.log('Response status:', response.status);
@@ -59,16 +59,16 @@
 
                     // Prepare pie chart data for today (use the fetched data)
                     let todayPieData = [
-                        { label: "Focused", value: focusData[0].focused },
-                        { label: "Not Focused", value: focusData[0].not_focused }
+                        { label: "Neutral", value: focusData[0].neutral },
+                        { label: "Not Neutral", value: focusData[0].not_neutral }
                     ];
 
                     // Prepare pie chart data for weekly average
-                    let weeklyFocused = d3.mean(focusData, d => d.focused);
-                    let weeklyNotFocused = 100 - weeklyFocused;
+                    let weeklyNeutral = d3.mean(focusData, d => d.neutral);
+                    let weeklyNotNeutral = 100 - weeklyNeutral;
                     let weeklyPieData = [
-                        { label: "Focused", value: weeklyFocused },
-                        { label: "Not Focused", value: weeklyNotFocused }
+                        { label: "Neutral", value: weeklyNeutral },
+                        { label: "Not Neutral", value: weeklyNotNeutral }
                     ];
 
                     // Draw pie charts
@@ -85,7 +85,6 @@
                 })
                 .catch(error => console.error('Error fetching data:', error));
         });
-
 
         function drawPieChart(selector, data) {
             let width = 300, height = 300, radius = Math.min(width, height) / 2;
@@ -136,13 +135,13 @@
                 .domain([0, 100])
                 .range([height, 0]);
 
-            let lineFocused = d3.line()
+            let lineNeutral = d3.line()
                 .x(d => x(new Date(d.date)))
-                .y(d => y(d.focused));
+                .y(d => y(d.neutral));
 
-            let lineNotFocused = d3.line()
+            let lineNotNeutral = d3.line()
                 .x(d => x(new Date(d.date)))
-                .y(d => y(d.not_focused));
+                .y(d => y(d.not_neutral));
 
             svg.append('g')
                 .attr('transform', `translate(0,${height})`)
@@ -156,30 +155,30 @@
                 .attr('fill', 'none')
                 .attr('stroke', '#0000FF')
                 .attr('stroke-width', 1.5)
-                .attr('d', lineFocused);
+                .attr('d', lineNeutral);
 
             svg.append('path')
                 .datum(data)
                 .attr('fill', 'none')
                 .attr('stroke', '#808080')
                 .attr('stroke-width', 1.5)
-                .attr('d', lineNotFocused);
+                .attr('d', lineNotNeutral);
 
             svg.append('text')
                 .attr('x', width - 6)
-                .attr('y', y(data[0].focused))
+                .attr('y', y(data[0].neutral))
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end')
                 .style('fill', '#0000FF')
-                .text('Focused');
+                .text('Neutral');
 
             svg.append('text')
                 .attr('x', width - 6)
-                .attr('y', y(data[0].not_focused))
+                .attr('y', y(data[0].not_neutral))
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end')
                 .style('fill', '#808080')
-                .text('Not Focused');
+                .text('Not Neutral');
         }
     </script>
     <div>
