@@ -1,10 +1,9 @@
-{% extends "base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .chart-container {
@@ -42,7 +41,7 @@
         </div>
     </main>
     <script>
-         document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
             fetch('/get_data')
                 .then(response => {
                     console.log('Response status:', response.status);
@@ -53,35 +52,22 @@
                     const focusData = data;
 
                     // Check if data is correctly formatted
-                    if (!Array.isArray(focusData) || !focusData.length) {
+                    if (typeof focusData.neutral === 'undefined' || typeof focusData.not_neutral === 'undefined') {
                         throw new Error('Data format is incorrect or empty');
                     }
 
                     // Prepare pie chart data for today (use the fetched data)
                     let todayPieData = [
-                        { label: "Neutral", value: focusData[0].neutral },
-                        { label: "Not Neutral", value: focusData[0].not_neutral }
+                        { label: "Neutral", value: focusData.neutral },
+                        { label: "Not Neutral", value: focusData.not_neutral }
                     ];
 
-                    // Prepare pie chart data for weekly average
-                    let weeklyNeutral = d3.mean(focusData, d => d.neutral);
-                    let weeklyNotNeutral = 100 - weeklyNeutral;
-                    let weeklyPieData = [
-                        { label: "Neutral", value: weeklyNeutral },
-                        { label: "Not Neutral", value: weeklyNotNeutral }
-                    ];
+                    // Prepare pie chart data for weekly average (same data for simplicity, adjust as needed)
+                    let weeklyPieData = todayPieData;
 
                     // Draw pie charts
                     drawPieChart('#todayChart', todayPieData);
                     drawPieChart('#weeklyChart', weeklyPieData);
-
-                    // Draw line chart
-                    drawLineChart(focusData);
-
-                    // Home button click event
-                    document.getElementById('homeButton').addEventListener('click', function() {
-                        window.location.href = '/';  // Change this to your home page URL
-                    });
                 })
                 .catch(error => console.error('Error fetching data:', error));
         });
@@ -113,76 +99,11 @@
                 .attr('transform', d => `translate(${path.centroid(d)})`)
                 .attr('dy', '0.35em')
                 .attr('text-anchor', 'middle')
-                .text(d => `${d.data.label}: ${d.data.value}%`);
-        }
-
-        function drawLineChart(data) {
-            let margin = { top: 20, right: 30, bottom: 30, left: 40 };
-            let width = document.getElementById('lineChartContainer').clientWidth - margin.left - margin.right;
-            let height = 400 - margin.top - margin.bottom;
-
-            let svg = d3.select('#lineChart')
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom)
-                .append('g')
-                .attr('transform', `translate(${margin.left},${margin.top})`);
-
-            let x = d3.scaleTime()
-                .domain(d3.extent(data, d => new Date(d.date)))
-                .range([0, width]);
-
-            let y = d3.scaleLinear()
-                .domain([0, 100])
-                .range([height, 0]);
-
-            let lineNeutral = d3.line()
-                .x(d => x(new Date(d.date)))
-                .y(d => y(d.neutral));
-
-            let lineNotNeutral = d3.line()
-                .x(d => x(new Date(d.date)))
-                .y(d => y(d.not_neutral));
-
-            svg.append('g')
-                .attr('transform', `translate(0,${height})`)
-                .call(d3.axisBottom(x).ticks(d3.timeDay.every(1)).tickFormat(d3.timeFormat('%b %d')));
-
-            svg.append('g')
-                .call(d3.axisLeft(y));
-
-            svg.append('path')
-                .datum(data)
-                .attr('fill', 'none')
-                .attr('stroke', '#0000FF')
-                .attr('stroke-width', 1.5)
-                .attr('d', lineNeutral);
-
-            svg.append('path')
-                .datum(data)
-                .attr('fill', 'none')
-                .attr('stroke', '#808080')
-                .attr('stroke-width', 1.5)
-                .attr('d', lineNotNeutral);
-
-            svg.append('text')
-                .attr('x', width - 6)
-                .attr('y', y(data[0].neutral))
-                .attr('dy', '.35em')
-                .attr('text-anchor', 'end')
-                .style('fill', '#0000FF')
-                .text('Neutral');
-
-            svg.append('text')
-                .attr('x', width - 6)
-                .attr('y', y(data[0].not_neutral))
-                .attr('dy', '.35em')
-                .attr('text-anchor', 'end')
-                .style('fill', '#808080')
-                .text('Not Neutral');
+                .text(d => `${d.data.label}: ${d.data.value.toFixed(2)}s`);
         }
     </script>
     <div>
         <a href="/" class="back-link">Back to Home</a>
     </div>
 </body>
-{% endblock %}
+</html>

@@ -52,38 +52,49 @@ def connect_to_db(db_path):
     db_conn = sqlite3.connect(db_path)
     return db_conn
 
+
 def fetch_focus_data():
-    conn = connect_to_db(db_path)
+    conn = connect_to_db('data/brainy_bits.db')  # Update with your actual database path
     cursor = conn.cursor()
 
-    # Fetch data from the emotion_detect_data table
-    cursor.execute("SELECT timestamp, Neutral_s FROM emotion_detect_data")
-    emotion_data = cursor.fetchall()
+    # Aggregate the total seconds for each emotion
+    cursor.execute("""
+        SELECT 
+            SUM(Angry_s) AS Angry_s,
+            SUM(Sad_s) AS Sad_s,
+            SUM(Happy_s) AS Happy_s,
+            SUM(Fear_s) AS Fear_s,
+            SUM(Disgust_s) AS Disgust_s,
+            SUM(Neutral_s) AS Neutral_s,
+            SUM(Surprise_s) AS Surprise_s
+        FROM emotion_detect_data
+    """)
+    emotion_totals = cursor.fetchone()
 
     conn.close()
 
-    focused_count = 0
-    not_focused_count = 0
-    daily_data = {}
+    if emotion_totals:
+        focused = emotion_totals[5]  # Neutral_s
+        not_focused = sum(emotion_totals) - focused  # Total - Neutral_s
 
-    for record in emotion_data:
-        timestamp, neutral_score = record
-        date = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S').date()
-
-        if date not in daily_data:
-            daily_data[date] = {'focused': 0, 'not_focused': 0}
-
-        if neutral_score >= 0.5:  # Assuming 0.5 as the threshold for "neutral"
-            daily_data[date]['focused'] += 1
-        else:
-            daily_data[date]['not_focused'] += 1
-
-    return [{'date': date, 'focused': data['focused'], 'not_focused': data['not_focused']} for date, data in daily_data.items()]
+        return {
+            'neutral': focused,
+            'not_neutral': not_focused
+        }
+    else:
+        return {
+            'neutral': 0,
+            'not_neutral': 0
+        }
 
 @app.route('/get_data')
 def get_data():
-    focus_data = fetch_focus_data()
-    return jsonify(focus_data)
+    try:
+        focus_data = fetch_focus_data()
+        return jsonify(focus_data)
+    except Exception as e:
+        print('Error:', str(e))
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/video_feed')
 def video_feed():
