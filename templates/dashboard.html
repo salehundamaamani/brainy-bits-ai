@@ -8,6 +8,7 @@
     <style>
         .chart-container {
             margin: 20px 0;
+            text-align: center;
         }
         .pie-chart {
             width: 300px;
@@ -17,6 +18,13 @@
         #lineChartContainer {
             width: 100%;
             height: 400px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin: 20px;
+            text-decoration: none;
+            color: #007BFF;
         }
     </style>
 </head>
@@ -45,6 +53,9 @@
             fetch('/get_data')
                 .then(response => {
                     console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
                     return response.json();
                 })
                 .then(data => {
@@ -78,10 +89,11 @@
                 .append('svg')
                 .attr('width', width)
                 .attr('height', height)
+                .attr('xmlns', 'http://www.w3.org/2000/svg')  // SVG Namespace
                 .append('g')
                 .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
-            let color = d3.scaleOrdinal(['#0000FF', '#808080']);
+            let color = d3.scaleOrdinal(['#01FF48', '#F98080']);
             let pie = d3.pie().value(d => d.value);
             let path = d3.arc().outerRadius(radius).innerRadius(0);
 
@@ -99,7 +111,7 @@
                 .attr('transform', d => `translate(${path.centroid(d)})`)
                 .attr('dy', '0.35em')
                 .attr('text-anchor', 'middle')
-                .text(d => `${d.data.label}: ${d.data.value.toFixed(2)}s`);
+                .text(d => `${d.data.label}: ${d.data.value.toFixed(2)}`);
         }
     </script>
     <div>
