@@ -141,38 +141,24 @@ def fetch_focus_data():
 
     print(emotion_dict)
 
-    def handle_data_access(data_dict):
-        for key, value in data_dict.items():
-            if isinstance(value, (list, tuple)):
-                # Process lists or tuples
-                print(f"Processing key {key} with value {value}")
-                # Example: Accessing elements
-                if len(value) > 1:
-                    print(f"First element: {value[0]}")
-                    print(f"Second element: {value[1]}")
-                else:
-                    print(f"Only one element present: {value[0]}")
-            elif isinstance(value, float):
-                # Process float values
-                print(f"Processing key {key} with float value {value}")
-                # Example: Just using the float value directly
-                print(f"Float value: {value}")
-            else:
-                print(f"Unexpected type for key {key}: {type(value)}")
-
     focused = 0
     not_focused = 0
 
     print('works')
 
     for person_id in emotion_dict:
-        neutral_time = handle_data_access(emotion_dict[person_id][5])  # Neutral_s
+        # Directly access the float value
+        neutral_time = emotion_dict[person_id]
         print('works2')
-        total_emotion_time = sum(handle_data_access(emotion_dict[person_id]))
+
+        # Calculate total emotion time if you have multiple values to sum
+        # For single float values, this will be just the float itself
+        total_emotion_time = neutral_time
+        print(total_emotion_time)
 
         # Define conditions for being focused
-        if (neutral_time > total_emotion_time / 2 and
-                head_pose_dict.get(person_id, [0] * 5)[0] > sum(head_pose_dict.get(person_id, [0] * 5)[1:]) and
+        if (neutral_time > total_emotion_time / 2 or
+                head_pose_dict.get(person_id, [0] * 5)[0] > sum(head_pose_dict.get(person_id, [0] * 5)[1:]) or
                 eye_tracking_dict.get(person_id, [0] * 4)[3] > sum(eye_tracking_dict.get(person_id, [0] * 4)[:3])):
             focused += neutral_time
         else:
