@@ -1,3 +1,4 @@
+import csv
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, Response, jsonify
@@ -173,14 +174,6 @@ def fetch_focus_data():
         'not_neutral': not_focused
     }
 
-@app.route('/get_data')
-def get_data():
-    try:
-        focus_data = fetch_focus_data()
-        return jsonify(focus_data)
-    except Exception as e:
-        print('Error:', str(e))
-        return jsonify({'error': str(e)}), 500
 
 @app.route('/video_feed')
 def video_feed():
@@ -188,9 +181,6 @@ def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
 
 @app.route('/data')
 def get_data():
