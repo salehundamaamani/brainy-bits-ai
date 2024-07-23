@@ -1,11 +1,12 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 body {
     font-family: 'Roboto', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
 }
 
 .header {
@@ -64,37 +65,84 @@ body {
     color: #333333;
 }
 
-.container {
+.content {
     flex: 1;
-    padding: 0;
-    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: url('/static/images/your-image.jpg') no-repeat center center; /* Adjust the path to your image */
+    background-size: cover; /* Ensure the image covers the full area */
 }
 
 .footer {
-    background-color: #ffffff;
-    color: #333333;
+    background-color: #CED5DD;  /* Updated background color */
+    color: #333333;  /* Text color for readability */
     text-align: center;
-    padding: 10px 0;
+    padding: 20px 0;
     width: 100%;
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);  /* Adding a subtle shadow */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     position: relative;
 }
 
-.video-container {
-    width: 100%;
-    height: 100%;
-    max-height: calc(100vh - 100px); /* Subtracting header and footer height */
+.footer .container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
 }
 
-.video-container video {
+.footer .row {
+    display: flex;
+    justify-content: space-between;
     width: 100%;
-    height: auto;
-    max-height: 100%;
+    margin: 0;
+}
+
+.footer-section {
+    margin: 10px;
+}
+
+.footer-heading {
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #333333;  /* Ensure headings are readable */
+}
+
+.footer-links {
+    margin: 5px 0;
+    font-weight: 400;
+}
+
+.footer-links a {
+    color: #333333;  /* Text color for readability */
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px;
+    font-size: 16px;
+}
+
+.footer-links a:hover {
+    color: #007bff;
+}
+
+.footer-bottom {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px; /* Adjust margin to minimize gap */
+    font-weight: 400;
+    color: #333333;  /* Text color for readability */
+}
+
+.social-icon {
+    font-size: 24px;
+    margin: 0 10px;
+    color: #333333;  /* Text color for readability */
+    transition: color 0.3s;
+}
+
+.social-icon:hover {
+    color: #007bff;
 }
