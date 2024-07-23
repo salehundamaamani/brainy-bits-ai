@@ -57,119 +57,95 @@ def fetch_focus_data():
     conn = connect_to_db('data/brainy_bits.db')  # Update with your actual database path
     cursor = conn.cursor()
 
-    # Aggregate the total seconds for each emotion
     cursor.execute("""
-        SELECT 
-            SUM(Angry_s) AS Angry_s,
-            SUM(Sad_s) AS Sad_s,
-            SUM(Happy_s) AS Happy_s,
-            SUM(Fear_s) AS Fear_s,
-            SUM(Disgust_s) AS Disgust_s,
-            SUM(Neutral_s) AS Neutral_s,
-            SUM(Surprise_s) AS Surprise_s
+        SELECT
+            user_id
         FROM emotion_detect_data
-        GROUP BY Person_ID
-    """)
-    emotion_totals = cursor.fetchone()
-
-    cursor.execute("""
-            SELECT Person_ID,
-            SUM(Looking_Forward_s) AS Looking_Forward_s,
-            SUM(Looking_Left_s) AS Looking_Left_s,
-            SUM(Looking_Right_s) AS Looking_Right_s,
-            SUM(Looking_Up_s) AS Looking_Up_s,
-            SUM(Looking_Down_s) AS Looking_Down_s
-        FROM head_pose_data
-        GROUP BY Person_ID
         """)
 
-    head_pose_data = cursor.fetchall()
+    user_id_list = cursor.fetchall()
+    user_id_list = [user_id[0] for user_id in user_id_list]
 
-    cursor.execute("""
-            SELECT Person_ID,
-                SUM(Duration_Eyes_Closed_s) AS Duration_Eyes_Closed_s,
-                SUM(Duration_Looking_Left_s) AS Duration_Looking_Left_s,
-                SUM(Duration_Looking_Right_s) AS Duration_Looking_Right_s,
-                SUM(Duration_Looking_Straight_s) AS Duration_Looking_Straight_s
-            FROM eye_track_data
-            GROUP BY Person_ID
-        """)
-    eye_track_data = cursor.fetchall()
+    focussed = 0
+    not_focussed = 0
+    for i in user_id_list:
+        datalist=[]
+        cursor.execute("""
+                   SELECT
+                       Angry_s,
+                       Sad_s,
+                       Happy_s,
+                       Fear_s,
+                       Disgust_s,
+                       Neutral_s,
+                       Surprise_s
+                   FROM emotion_detect_data
+                   WHERE user_id = ?
+               """, (i,))
+        row = cursor.fetchone()
 
+        if row:
+            max_value = max(row)
+            max_column_index = row.index(max_value)
+            columns = ['Angry_s', 'Sad_s', 'Happy_s', 'Fear_s', 'Disgust_s', 'Neutral_s', 'Surprise_s']
+            max_column = columns[max_column_index]
+
+            print('emotion: ', max_column)
+            datalist.append(max_column)
+
+
+        cursor.execute("""
+                           SELECT
+                               Looking_Forward_s,
+                               Looking_Left_s,
+                               Looking_Right_s,
+                               Looking_Up_s,
+                               Looking_Down_s
+                           FROM head_pose_data
+                           WHERE user_id = ?
+                       """, (i,))
+        row = cursor.fetchone()
+
+        if row:
+            max_value = max(row)
+            max_column_index = row.index(max_value)
+            columns = ['Looking_Forward_s', 'Looking_Left_s', 'Looking_Right_s', 'Looking_Up_s', 'Looking_Down_s']
+            max_column = columns[max_column_index]
+
+            print('head: ', max_column)
+            datalist.append(max_column)
+
+        cursor.execute("""
+                                   SELECT
+                                       Duration_Eyes_Closed_s,
+                                       Duration_Looking_Left_s,
+                                       Duration_Looking_Right_s,
+                                       Duration_Looking_Straight_s
+                                   FROM eye_track_data
+                                   WHERE user_id = ?
+                               """, (i,))
+        row = cursor.fetchone()
+
+        if row:
+            max_value = max(row)
+            max_column_index = row.index(max_value)
+            columns = ['Duration_Eyes_Closed_s', 'Duration_Looking_Left_s', 'Duration_Looking_Right_s', 'Duration_Looking_Straight_s']
+            max_column = columns[max_column_index]
+
+            print('eye-tracking: ', max_column)
+            datalist.append(max_column)
+
+        if 'Happy_s' in datalist and 'Duration_Looking_Straight_s' in datalist and 'Looking_Forward_s' in datalist:
+            focussed += 1
+        else:
+            not_focussed +=1
     conn.close()
 
-    def round_float(value):
-        if isinstance(value, float):
-            # Round to 1 decimal place if the decimal part has more than 2 digits
-            return round(value, 1) if len(f"{value:.10f}".split('.')[1]) > 2 else value
-        return value
-
-    def process_row(row):
-        if isinstance(row, (list, tuple)):
-            # Apply rounding to each float in the row
-            return tuple(round_float(item) for item in row)
-        elif isinstance(row, float):
-            # Convert single float to a tuple with the float value
-            return (round_float(row),)
-        else:
-            # Handle other unexpected types if necessary
-            print(f"Unexpected row type: {type(row)}")
-            return None
-
-    def create_dict_from_rows(rows):
-        result = {}
-        for index, row in enumerate(rows):
-            if row:
-                if len(row) > 1:
-                    # Handle rows with multiple elements
-                    result[row[0]] = row[1:]
-                elif len(row) == 1:
-                    # Handle single float rows by creating default key-value pairs
-                    result[f"key_{index + 1}"] = row[0]
-                else:
-                    print(f"Row does not have enough data to create a dictionary entry: {row}")
-        return result
-
-    # Process and create dictionaries
-    emotion_totals = [process_row(row) for row in emotion_totals]
-    head_pose_data = [process_row(row) for row in head_pose_data]
-    eye_track_data = [process_row(row) for row in eye_track_data]
-
-    emotion_dict = create_dict_from_rows(emotion_totals)
-    head_pose_dict = create_dict_from_rows(head_pose_data)
-    eye_tracking_dict = create_dict_from_rows(eye_track_data)
-
-    print(emotion_dict)
-
-    focused = 0
-    not_focused = 0
-
-    print('works')
-
-    for person_id in emotion_dict:
-        # Directly access the float value
-        neutral_time = emotion_dict[person_id]
-        print('works2')
-
-        # Calculate total emotion time if you have multiple values to sum
-        # For single float values, this will be just the float itself
-        total_emotion_time = neutral_time
-        print(total_emotion_time)
-
-        # Define conditions for being focused
-        if (neutral_time > total_emotion_time / 2 or
-                head_pose_dict.get(person_id, [0] * 5)[0] > sum(head_pose_dict.get(person_id, [0] * 5)[1:]) or
-                eye_tracking_dict.get(person_id, [0] * 4)[3] > sum(eye_tracking_dict.get(person_id, [0] * 4)[:3])):
-            focused += neutral_time
-        else:
-            not_focused += total_emotion_time - neutral_time
-
-    print(focused)
-    print(not_focused)
+    print(focussed, 'and ', not_focussed)
 
     return {
-        'neutral': focused,
-        'not_neutral': not_focused
+        'neutral': focussed,
+        'not_neutral': not_focussed
     }
 
 @app.route('/get_data')
