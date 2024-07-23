@@ -38,7 +38,6 @@ class HeadPose(db.Model):
 def home():
     return render_template('index.html')
 
-
 @app.route('/classroom_monitoring')
 def classroom_monitoring():
     return render_template('classroom_monitoring.html')
@@ -46,6 +45,9 @@ def classroom_monitoring():
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 def get_abs_path(*args):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), *args)
