@@ -43,25 +43,27 @@ body {
     padding: 0;
     margin: 0;
     display: flex;
-    gap: 15px;  /* Added gap between items */
+    gap: 5px;  /* Reduced gap between items */
 }
 
 .header nav ul li {
-    margin-left: 10px;  /* Moved links slightly to the left */
+    margin-left: 0;  /* Removed extra margin */
 }
 
 .header nav ul li a {
-    color: #333333;
+    color: #ffffff;
     text-decoration: none;
     font-size: 16px;
     transition: background-color 0.3s, color 0.3s;
     padding: 10px 20px;
     border-radius: 5px;
+    background-color: #003366;  /* Dark blue button background color */
+    border: 1px solid #003366;  /* Dark blue button border */
 }
 
 .header nav ul li a:hover {
-    background-color: #eeeeee;  /* Light background on hover */
-    color: #333333;
+    background-color: #002244;  /* Darker blue background on hover */
+    color: #ffffff;
 }
 
 .container {
