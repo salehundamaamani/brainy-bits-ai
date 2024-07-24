@@ -12,9 +12,70 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f8f9fa;
-    padding: 10px;
+    background-color: rgba(52, 58, 64, 0.1); /* Adjust the alpha value (0.8) for desired transparency */
+    transition: background-color 0.3s ease;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.title {
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    font-size: 1.5em;
+    margin: 0;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-family: 'Arial', sans-serif;
+    font-size: 1em;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #007bff;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul li {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}
+
 
 #homeButton {
     background-color: #007bff;
