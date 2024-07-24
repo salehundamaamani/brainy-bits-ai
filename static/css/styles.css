@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'system-ui', -apple-system;
     margin: 0;
     padding: 0;
     display: flex;
@@ -31,7 +31,7 @@ header {
 
 .title {
     color: #ffffff;
-    font-family: 'Arial', sans-serif;
+    font-family: 'system-ui', -apple-system;
     font-size: 1.5em;
     margin: 0;
 }
@@ -50,7 +50,7 @@ nav ul li {
 nav ul li a {
     color: #ffffff;
     text-decoration: none;
-    font-family: 'Arial', sans-serif;
+    font-family: 'system-ui', -apple-system;
     font-size: 1em;
     transition: color 0.3s ease;
 }
