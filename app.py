@@ -47,6 +47,10 @@ def classroom_monitoring():
 def dashboard():
     return render_template('dashboard.html')
 
+@app.route('/socials')
+def socials():
+    return render_template('socials.html')
+
 def get_abs_path(*args):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), *args)
 

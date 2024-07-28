@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="about-page">
+    <div class="container about-content">
+        <h2 class="text-center text-primary-custom my-4">About Us</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <p>GreenEvents is dedicated to promoting and facilitating engagement in sustainability-focused events. Our mission is to connect individuals and organizations passionate about environmental conservation and green technologies.</p>
+                <p>Founded in 2024, GreenEvents has organized numerous workshops, seminars, clean-up drives, and eco-friendly fairs. Our goal is to create a community committed to sustainable living and environmental stewardship.</p>
+                <p>We believe in the power of collective action and strive to make a positive impact on the environment. Join us in our journey towards a greener future by participating in our events, sharing your ideas, and collaborating with like-minded individuals.</p>
+                <p>If you have any questions or would like to learn more about our initiatives, please feel free to <a href="{% url 'contact_us' %}">contact us</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
