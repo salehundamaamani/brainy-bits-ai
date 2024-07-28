@@ -11,7 +11,7 @@ import tensorflow as tf
 from imutils import face_utils
 from scipy.ndimage import zoom
 from tensorflow.keras.models import load_model
-
+from datetime import datetime
 from db_utils import connect_to_db
 
 
@@ -62,7 +62,7 @@ def generate_frames():
         B = np.linalg.norm(eye[2] - eye[4])
         C = np.linalg.norm(eye[0] - eye[3])
         if C == 0:
-            return 0
+            return 0  # Avoid division by zero
         ear = (A + B) / (2.0 * C)
         return ear
 
@@ -275,9 +275,9 @@ def generate_frames():
             for person_id in duration_eyes_closed:
                 user_id = person_ids[person_id]
                 db_cursor.execute('''
-                    INSERT INTO eye_track_data (user_id, Person_ID, Duration_Eyes_Closed_s, Duration_Looking_Left_s, Duration_Looking_Right_s, Duration_Looking_Straight_s, Left_Counts, Right_Counts, Straight_Counts)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (user_id, person_id, duration_eyes_closed[person_id], duration_looking_left[person_id],
+                    INSERT INTO eye_track_data (user_id, Date, Person_ID, Duration_Eyes_Closed_s, Duration_Looking_Left_s, Duration_Looking_Right_s, Duration_Looking_Straight_s, Left_Counts, Right_Counts, Straight_Counts)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (user_id, datetime.now().date(), person_id, duration_eyes_closed[person_id], duration_looking_left[person_id],
                       duration_looking_right[person_id], duration_looking_straight[person_id], count_left[person_id],
                       count_right[person_id], count_straight[person_id]))
                 print(f"Inserted eye track data for {user_id}")
@@ -285,9 +285,9 @@ def generate_frames():
             for person_id in emotion_duration["angry"]:
                 user_id = person_ids[person_id]
                 db_cursor.execute('''
-                    INSERT INTO emotion_detect_data (user_id, Person_ID, Angry_s, Sad_s, Happy_s, Fear_s, Disgust_s, Neutral_s, Surprise_s)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (user_id, person_id, emotion_duration["angry"][person_id], emotion_duration["sad"][person_id],
+                    INSERT INTO emotion_detect_data (user_id, Date, Person_ID, Angry_s, Sad_s, Happy_s, Fear_s, Disgust_s, Neutral_s, Surprise_s)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (user_id, datetime.now().date(), person_id, emotion_duration["angry"][person_id], emotion_duration["sad"][person_id],
                       emotion_duration["happy"][person_id], emotion_duration["fear"][person_id],
                       emotion_duration["disgust"][person_id], emotion_duration["neutral"][person_id],
                       emotion_duration["surprise"][person_id]))
@@ -296,9 +296,9 @@ def generate_frames():
             for person_id in time_forward_seconds:
                 user_id = person_ids[person_id]
                 db_cursor.execute('''
-                    INSERT INTO head_pose_data (user_id, Person_ID, Looking_Forward_s, Looking_Left_s, Looking_Right_s, Looking_Up_s, Looking_Down_s)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                ''', (user_id, person_id, time_forward_seconds[person_id], time_left_seconds[person_id],
+                    INSERT INTO head_pose_data (user_id, Date, Person_ID, Looking_Forward_s, Looking_Left_s, Looking_Right_s, Looking_Up_s, Looking_Down_s)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (user_id, datetime.now().date(), person_id, time_forward_seconds[person_id], time_left_seconds[person_id],
                       time_right_seconds[person_id], time_up_seconds[person_id], time_down_seconds[person_id]))
                 print(f"Inserted head pose data for {user_id}")
 
@@ -341,6 +341,3 @@ def generate_frames():
                 writer.writerow([person_id, time_forward_seconds[person_id], time_left_seconds[person_id],
                                  time_right_seconds[person_id], time_up_seconds[person_id],
                                  time_down_seconds[person_id]])
-
-
-
