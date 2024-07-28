@@ -19,19 +19,42 @@ def get_abs_path(directory, file):
     file_path = os.path.join(directory_path, file)
     return file_path
 
-USER_ID_FILE = get_abs_path('data', 'last_user_id.txt')
 
 def generate_user_id():
-    if os.path.exists(USER_ID_FILE):
-        with open(USER_ID_FILE, 'r') as file:
-            last_id = int(file.read().strip())
+    from db_utils import get_db_connection
+    db_conn = get_db_connection()
+    db_cursor = db_conn.cursor()
+
+    logger.info("Creating user table if not exists")
+    db_cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user_ids (
+            user_id REAL NOT NULL PRIMARY KEY,
+            date_created DATE NULL
+        )
+    ''')
+
+    # Get the last user_id from the table
+    db_cursor.execute('SELECT user_id FROM user_ids ORDER BY user_id DESC LIMIT 1')
+    result = db_cursor.fetchone()
+    if result:
+        last_id = int(result[0])
     else:
         last_id = 70000
+    logger.info("Last user id is: {}".format(last_id))
     next_id = last_id + 1
-    with open(USER_ID_FILE, 'w') as file:
-        file.write(str(next_id))
-    user_id = f'{next_id:05}'
-    return user_id
+    date_created = datetime.now().date()
+
+    # Insert the new user_id into the table
+    db_cursor.execute('''
+        INSERT INTO user_ids (user_id, date_created)
+        VALUES (%s, %s)
+    ''', (next_id, date_created))
+    logger.info("New user id : {} inserted in database".format(next_id))
+    db_conn.commit()
+    db_conn.close()
+
+    return next_id
+
 
 def generate_frames():
     print("Generating the frames...")
