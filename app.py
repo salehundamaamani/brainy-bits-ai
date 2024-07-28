@@ -63,7 +63,7 @@ def fetch_focus_data():
                        Neutral_s,
                        Surprise_s
                    FROM emotion_detect_data
-                   WHERE user_id = ?
+                   WHERE user_id = %s
                """, (i,))
         row = cursor.fetchone()
 
@@ -84,7 +84,7 @@ def fetch_focus_data():
                                Looking_Up_s,
                                Looking_Down_s
                            FROM head_pose_data
-                           WHERE user_id = ?
+                           WHERE user_id = %s
                        """, (i,))
         row = cursor.fetchone()
 
@@ -104,7 +104,7 @@ def fetch_focus_data():
                                        Duration_Looking_Right_s,
                                        Duration_Looking_Straight_s
                                    FROM eye_track_data
-                                   WHERE user_id = ?
+                                   WHERE user_id = %s
                                """, (i,))
         row = cursor.fetchone()
 
@@ -141,7 +141,7 @@ def get_data():
         return jsonify(focus_data)
     except Exception as e:
         logger.error('Error fetching focus data:', exc_info=True)
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)})
 
 
 @app.route('/video_feed')
@@ -149,6 +149,15 @@ def video_feed():
     from video_monitor import generate_frames  # Import inside the function to avoid circular import
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
+@app.route('/generate_userid_QA', methods=['GET'])
+def generate_userid_QA():
+    logger.debug("Entering generate_userid_QA method")
+    from video_monitor import generate_user_id
+    user_id = generate_user_id()
+    if user_id is None:
+        return jsonify({'status': 'FAILURE', 'code': '500', 'message': 'User ID could not be generated.'})
+    return jsonify({'status': 'SUCCESS', 'code': '200 OK', 'user_id': user_id})
 
 if __name__ == '__main__':
     print("Starting the app...")
