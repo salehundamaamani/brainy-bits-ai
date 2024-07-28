@@ -7,6 +7,7 @@ import sqlite3, os
 app = Flask(__name__)
 from sqlalchemy import func, case, and_
 import logging
+from datetime import datetime, date
 
 
 db_path = get_abs_path('data', 'brainy_bits.db')
@@ -51,6 +52,79 @@ def get_abs_path(*args):
 def connect_to_db(db_path):
     db_conn = sqlite3.connect(db_path)
     return db_conn
+
+
+def fetch_focus_data_today():
+    conn = connect_to_db('data/brainy_bits.db')  # Update with your actual database path
+    cursor = conn.cursor()
+
+    # Get the last N entries for today, assuming recent entries are today's data
+    N = 2  # Adjust this value based on your data insertion frequency
+    cursor.execute("SELECT user_id FROM emotion_detect_data ORDER BY user_id DESC LIMIT ?", (N,))
+    user_id_list = cursor.fetchall()
+    user_id_list = [user_id[0] for user_id in user_id_list]
+
+    focussed = 0
+    not_focussed = 0
+
+    for i in user_id_list:
+        datalist = []
+
+        cursor.execute("""
+            SELECT Angry_s, Sad_s, Happy_s, Fear_s, Disgust_s, Neutral_s, Surprise_s
+            FROM emotion_detect_data
+            WHERE user_id = ?
+        """, (i,))
+        row = cursor.fetchone()
+
+        if row:
+            max_value = max(row)
+            max_column_index = row.index(max_value)
+            columns = ['Angry_s', 'Sad_s', 'Happy_s', 'Fear_s', 'Disgust_s', 'Neutral_s', 'Surprise_s']
+            max_column = columns[max_column_index]
+            datalist.append(max_column)
+
+        cursor.execute("""
+            SELECT Looking_Forward_s, Looking_Left_s, Looking_Right_s, Looking_Up_s, Looking_Down_s
+            FROM head_pose_data
+            WHERE user_id = ?
+        """, (i,))
+        row = cursor.fetchone()
+
+        if row:
+            max_value = max(row)
+            max_column_index = row.index(max_value)
+            columns = ['Looking_Forward_s', 'Looking_Left_s', 'Looking_Right_s', 'Looking_Up_s', 'Looking_Down_s']
+            max_column = columns[max_column_index]
+            datalist.append(max_column)
+
+        cursor.execute("""
+            SELECT Duration_Eyes_Closed_s, Duration_Looking_Left_s, Duration_Looking_Right_s, Duration_Looking_Straight_s
+            FROM eye_track_data
+            WHERE user_id = ?
+        """, (i,))
+        row = cursor.fetchone()
+
+        if row:
+            max_value = max(row)
+            max_column_index = row.index(max_value)
+            columns = ['Duration_Eyes_Closed_s', 'Duration_Looking_Left_s', 'Duration_Looking_Right_s', 'Duration_Looking_Straight_s']
+            max_column = columns[max_column_index]
+            datalist.append(max_column)
+
+        if 'Happy_s' in datalist and 'Duration_Looking_Straight_s' in datalist and 'Looking_Forward_s' in datalist:
+            focussed += 1
+        else:
+            not_focussed += 1
+
+    conn.close()
+
+    print(focussed, 'and ', not_focussed)
+
+    return {
+        'focussed': focussed,
+        'not_focussed': not_focussed
+}
 
 
 def fetch_focus_data():
@@ -152,6 +226,17 @@ def fetch_focus_data():
 def get_data():
     try:
         focus_data = fetch_focus_data()
+        return jsonify(focus_data)
+    except Exception as e:
+        print('Error:', str(e))
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/get_data_today')
+def get_data_today():
+    try:
+        focus_data = fetch_focus_data_today()
+        print('focus', focus_data)
         return jsonify(focus_data)
     except Exception as e:
         print('Error:', str(e))
