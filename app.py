@@ -1,60 +1,43 @@
-from datetime import datetime, timedelta
-from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, Response, jsonify
-from video_monitor import get_abs_path
-from db_utils import check_create_database
-import sqlite3, os
+from config import logger
+from db_utils import create_database_tables
 app = Flask(__name__)
-from sqlalchemy import func, case, and_
-import logging
 
 
-db_path = get_abs_path('data', 'brainy_bits.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/brainy_bits.db'  # Update with your database URI
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+@app.route('/init_database', methods=['GET'])
+def init_database():
+    logger.info("Initiating database setup.")
+    status_code, error = create_database_tables()
+    if status_code == 1:
+        logger.info("Database initialized successfully.")
+        return jsonify({"status": "SUCCESS", "code": "200 OK", "message": "Database initialized successfully"})
+    else:
+        logger.error(f"Database initialization failed: {error}")
+        return jsonify(
+            {"status": "FAILURE", "code": "500", "message": "Database initialization failed", "error": error})
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
-class Emotion(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, nullable=False)
-    emotion = db.Column(db.Float, nullable=False)
-
-class EyeTracking(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, nullable=False)
-    direction = db.Column(db.Float, nullable=False)
-
-class HeadPose(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, nullable=False)
-    pose = db.Column(db.Float, nullable=False)
 
 @app.route('/')
 def home():
+    logger.debug("Rendering home page.")
     return render_template('index.html')
 
 
 @app.route('/classroom_monitoring')
 def classroom_monitoring():
+    logger.debug("Rendering classroom monitoring page.")
     return render_template('classroom_monitoring.html')
+
 
 @app.route('/dashboard')
 def dashboard():
+    logger.debug("Rendering dashboard page.")
     return render_template('dashboard.html')
-
-def get_abs_path(*args):
-    return os.path.join(os.path.abspath(os.path.dirname(__file__)), *args)
-
-def connect_to_db(db_path):
-    db_conn = sqlite3.connect(db_path)
-    return db_conn
 
 
 def fetch_focus_data():
-    conn = connect_to_db('data/brainy_bits.db')  # Update with your actual database path
+    from db_utils import get_db_connection
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -69,7 +52,7 @@ def fetch_focus_data():
     focussed = 0
     not_focussed = 0
     for i in user_id_list:
-        datalist=[]
+        datalist = []
         cursor.execute("""
                    SELECT
                        Angry_s,
@@ -92,7 +75,6 @@ def fetch_focus_data():
 
             print('emotion: ', max_column)
             datalist.append(max_column)
-
 
         cursor.execute("""
                            SELECT
@@ -129,7 +111,8 @@ def fetch_focus_data():
         if row:
             max_value = max(row)
             max_column_index = row.index(max_value)
-            columns = ['Duration_Eyes_Closed_s', 'Duration_Looking_Left_s', 'Duration_Looking_Right_s', 'Duration_Looking_Straight_s']
+            columns = ['Duration_Eyes_Closed_s', 'Duration_Looking_Left_s', 'Duration_Looking_Right_s',
+                       'Duration_Looking_Straight_s']
             max_column = columns[max_column_index]
 
             print('eye-tracking: ', max_column)
@@ -138,7 +121,7 @@ def fetch_focus_data():
         if 'Happy_s' in datalist and 'Duration_Looking_Straight_s' in datalist and 'Looking_Forward_s' in datalist:
             focussed += 1
         else:
-            not_focussed +=1
+            not_focussed += 1
     conn.close()
 
     print(focussed, 'and ', not_focussed)
@@ -148,14 +131,18 @@ def fetch_focus_data():
         'not_neutral': not_focussed
     }
 
+
 @app.route('/get_data')
 def get_data():
+    logger.debug("Entering get_data method")
     try:
         focus_data = fetch_focus_data()
+        logger.info('Fetched focus data:', focus_data)
         return jsonify(focus_data)
     except Exception as e:
-        print('Error:', str(e))
+        logger.error('Error fetching focus data:', exc_info=True)
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/video_feed')
 def video_feed():
@@ -165,5 +152,7 @@ def video_feed():
 
 if __name__ == '__main__':
     print("Starting the app...")
-    check_create_database(db_path)
+    logger.info("Starting the app...")
+    with app.app_context():
+        init_database()
     app.run(debug=True)

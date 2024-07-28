@@ -1,7 +1,7 @@
 import csv
 import os
-import sqlite3
 import time
+import sqlite3
 
 import cv2
 import dlib
@@ -12,19 +12,14 @@ from imutils import face_utils
 from scipy.ndimage import zoom
 from tensorflow.keras.models import load_model
 from datetime import datetime
-from db_utils import connect_to_db
-
+from config import logger
 
 def get_abs_path(directory, file):
     directory_path = os.path.join(os.getcwd(), '', directory)
     file_path = os.path.join(directory_path, file)
     return file_path
 
-
-db_path = get_abs_path('data', 'brainy_bits.db')
-
 USER_ID_FILE = get_abs_path('data', 'last_user_id.txt')
-
 
 def generate_user_id():
     if os.path.exists(USER_ID_FILE):
@@ -35,10 +30,8 @@ def generate_user_id():
     next_id = last_id + 1
     with open(USER_ID_FILE, 'w') as file:
         file.write(str(next_id))
-
     user_id = f'{next_id:05}'
     return user_id
-
 
 def generate_frames():
     print("Generating the frames...")
@@ -266,51 +259,55 @@ def generate_frames():
 
     finally:
         cap.release()
-
-        db_conn = connect_to_db(db_path)
+        from db_utils import get_db_connection  # Import here to avoid circular import
+        db_conn = get_db_connection()
         db_cursor = db_conn.cursor()
-        print("Starting the data processing...")
+        logger.info("video_monitor: Database connection established")
 
         try:
             for person_id in duration_eyes_closed:
                 user_id = person_ids[person_id]
+                logger.debug(f"Eye Track Data: user_id={user_id}, person_id={person_id}, duration_eyes_closed={duration_eyes_closed[person_id]}, duration_looking_left={duration_looking_left[person_id]}, duration_looking_right={duration_looking_right[person_id]}, duration_looking_straight={duration_looking_straight[person_id]}, count_left={count_left[person_id]}, count_right={count_right[person_id]}, count_straight={count_straight[person_id]}")
+                logger.debug(f"Executing SQL: INSERT INTO eye_track_data (user_id, Date, Person_ID, Duration_Eyes_Closed_s, Duration_Looking_Left_s, Duration_Looking_Right_s, Duration_Looking_Straight_s, Left_Counts, Right_Counts, Straight_Counts) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) with values ({user_id}, {datetime.now().date()}, {person_id}, {duration_eyes_closed[person_id]}, {duration_looking_left[person_id]}, {duration_looking_right[person_id]}, {duration_looking_straight[person_id]}, {count_left[person_id]}, {count_right[person_id]}, {count_straight[person_id]})")
                 db_cursor.execute('''
                     INSERT INTO eye_track_data (user_id, Date, Person_ID, Duration_Eyes_Closed_s, Duration_Looking_Left_s, Duration_Looking_Right_s, Duration_Looking_Straight_s, Left_Counts, Right_Counts, Straight_Counts)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ''', (user_id, datetime.now().date(), person_id, duration_eyes_closed[person_id], duration_looking_left[person_id],
                       duration_looking_right[person_id], duration_looking_straight[person_id], count_left[person_id],
                       count_right[person_id], count_straight[person_id]))
-                print(f"Inserted eye track data for {user_id}")
+                logger.info(f"Inserted eye track data for {user_id}")
 
             for person_id in emotion_duration["angry"]:
                 user_id = person_ids[person_id]
+                logger.debug(f"Emotion Detect Data: user_id={user_id}, person_id={person_id}, angry={emotion_duration['angry'][person_id]}, sad={emotion_duration['sad'][person_id]}, happy={emotion_duration['happy'][person_id]}, fear={emotion_duration['fear'][person_id]}, disgust={emotion_duration['disgust'][person_id]}, neutral={emotion_duration['neutral'][person_id]}, surprise={emotion_duration['surprise'][person_id]}")
+                logger.debug(f"Executing SQL: INSERT INTO emotion_detect_data (user_id, Date, Person_ID, Angry_s, Sad_s, Happy_s, Fear_s, Disgust_s, Neutral_s, Surprise_s) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) with values ({user_id}, {datetime.now().date()}, {person_id}, {emotion_duration['angry'][person_id]}, {emotion_duration['sad'][person_id]}, {emotion_duration['happy'][person_id]}, {emotion_duration['fear'][person_id]}, {emotion_duration['disgust'][person_id]}, {emotion_duration['neutral'][person_id]}, {emotion_duration['surprise'][person_id]})")
                 db_cursor.execute('''
                     INSERT INTO emotion_detect_data (user_id, Date, Person_ID, Angry_s, Sad_s, Happy_s, Fear_s, Disgust_s, Neutral_s, Surprise_s)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ''', (user_id, datetime.now().date(), person_id, emotion_duration["angry"][person_id], emotion_duration["sad"][person_id],
                       emotion_duration["happy"][person_id], emotion_duration["fear"][person_id],
                       emotion_duration["disgust"][person_id], emotion_duration["neutral"][person_id],
                       emotion_duration["surprise"][person_id]))
-                print(f"Inserted emotion detect data for {user_id}")
+                logger.info(f"Inserted emotion detect data for {user_id}")
 
             for person_id in time_forward_seconds:
                 user_id = person_ids[person_id]
+                logger.debug(f"Head Pose Data: user_id={user_id}, person_id={person_id}, time_forward={time_forward_seconds[person_id]}, time_left={time_left_seconds[person_id]}, time_right={time_right_seconds[person_id]}, time_up={time_up_seconds[person_id]}, time_down={time_down_seconds[person_id]}")
+                logger.debug(f"Executing SQL: INSERT INTO head_pose_data (user_id, Date, Person_ID, Looking_Forward_s, Looking_Left_s, Looking_Right_s, Looking_Up_s, Looking_Down_s) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) with values ({user_id}, {datetime.now().date()}, {person_id}, {time_forward_seconds[person_id]}, {time_left_seconds[person_id]}, {time_right_seconds[person_id]}, {time_up_seconds[person_id]}, {time_down_seconds[person_id]})")
                 db_cursor.execute('''
                     INSERT INTO head_pose_data (user_id, Date, Person_ID, Looking_Forward_s, Looking_Left_s, Looking_Right_s, Looking_Up_s, Looking_Down_s)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 ''', (user_id, datetime.now().date(), person_id, time_forward_seconds[person_id], time_left_seconds[person_id],
                       time_right_seconds[person_id], time_up_seconds[person_id], time_down_seconds[person_id]))
-                print(f"Inserted head pose data for {user_id}")
+                logger.info(f"Inserted head pose data for {user_id}")
 
             db_conn.commit()
-            print("Data committed to the database.")
-        except sqlite3.Error as e:
-            print(f"Database error: {e}")
+            logger.debug("Data committed to the database.")
         except Exception as e:
-            print(f"Exception in database operation: {e}")
+            logger.error(f"Exception in database operation: {e}")
         finally:
             db_conn.close()
-            print("Database connection closed.")
+            logger.info("video_monitor: Database connection closed.")
 
         with open(get_abs_path('results', 'eye_tracking_data.csv'), 'w', newline='') as file:
             writer = csv.writer(file)
