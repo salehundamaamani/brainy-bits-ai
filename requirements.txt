@@ -1,4 +1,13 @@
-opencv-python
-dlib
+opencv-python~=4.10.0.84
+dlib~=19.24.4
 pandas
-numpy
+numpy~=1.26.4
+
+Flask~=3.0.3
+mediapipe~=0.10.14
+h5py~=3.11.0
+tensorflow~=2.16.2
+scipy~=1.14.0
+imutils~=0.5.4
+mysql-connector-python~=9.0.0
+python-dotenv~=1.0.1
