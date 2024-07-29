@@ -1,12 +1,15 @@
 import csv
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, Response, jsonify
+from flask import Response, jsonify, Flask, render_template, request, redirect, url_for
 from video_monitor import get_abs_path
 from db_utils import check_create_database
 import sqlite3, os
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
+app.secret_key = 'forcontactus'
+csrf = CSRFProtect(app)
 from sqlalchemy import func, case, and_
 import logging
 
@@ -50,6 +53,37 @@ def dashboard():
 @app.route('/socials')
 def socials():
     return render_template('socials.html')
+
+@app.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
+@app.route('/privacy_policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
+@app.route('/terms_of_service')
+def terms_of_service():
+    return render_template('terms_of_service.html')
+
+@app.route('/advertise')
+def advertise():
+    return render_template('advertise.html')
+
+@app.route('/contact_us', methods=['GET', 'POST'])
+def contact_us():
+    if request.method == 'POST':
+        # Process the form data here
+        # name = request.form.get('name')
+        # email = request.form.get('email')
+        # message = request.form.get('message')
+
+        # After processing, redirect or respond accordingly
+        return redirect(url_for('contact_us'))  # Or any other relevant route
+    return render_template('contact_us.html')
+
+@app.route('/team_details')
+def team_details():
+    return render_template('team_details.html')
 
 def get_abs_path(*args):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), *args)

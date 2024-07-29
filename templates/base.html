@@ -47,31 +47,23 @@
                     <h5 class="footer-heading">Classroom</h5>
                     <div class="footer-links">
                         <ul class="list-unstyled">
-                            <li><a href="/about_us/">About Us</a></li>
-                            <li><a href="/team_details/">Team Details</a></li>
-                            <li><a href="/contact_us/">Contact</a></li>
+                            <li><a href="{{ url_for('about_us') }}">About Us</a></li>
+                            <li><a href="{{ url_for('team_details') }}">Team Details</a></li>
+                            <li><a href="{{ url_for('contact_us') }}">Contact</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <h5 class="footer-heading">Business & Policy</h5>
-                    <div class="footer-links">
-                        <ul class="list-unstyled">
-                            <li><a href="/privacy_policy/">Privacy Policy</a></li>
-                            <li><a href="/terms_of_service/">Terms of Service</a></li>
-                            <li><a href="/advertise/">Advertise</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <h5 class="footer-heading">Home & Garden</h5>
-                    <div class="footer-links">
-                        <ul class="list-unstyled">
-                            <li><a href="/sustainability_for_all/">Sustainability for All</a></li>
-                            <li><a href="/news/">News</a></li>
-                        </ul>
-                    </div>
-                </div>
+    <h5 class="footer-heading">Business & Policy</h5>
+    <div class="footer-links">
+        <ul class="list-unstyled">
+            <li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li>
+            <li><a href="{{ url_for('terms_of_service') }}">Terms of Service</a></li>
+            <li><a href="{{ url_for('advertise') }}">Advertise</a></li>
+        </ul>
+    </div>
+</div>
+
             </div>
             <div class="footer-bottom mt-3">
                 <p>© 2024 BrainyBits. All Rights Reserved.</p>
