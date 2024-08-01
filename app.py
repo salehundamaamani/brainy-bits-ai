@@ -144,6 +144,115 @@ def get_data():
         return jsonify({'error': str(e)})
 
 
+def fetch_focus_data_today():
+    from db_utils import get_db_connection
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    today = date.today()
+
+    cursor.execute("""
+        SELECT
+            user_id
+        FROM emotion_detect_data
+        WHERE DATE(timestamp) = %s
+    """, (today,))
+
+    user_id_list = cursor.fetchall()
+    user_id_list = [user_id[0] for user_id in user_id_list]
+
+    focussed = 0
+    not_focussed = 0
+    for i in user_id_list:
+        datalist = []
+        cursor.execute("""
+                   SELECT
+                       Angry_s,
+                       Sad_s,
+                       Happy_s,
+                       Fear_s,
+                       Disgust_s,
+                       Neutral_s,
+                       Surprise_s
+                   FROM emotion_detect_data
+                   WHERE user_id = %s AND DATE(timestamp) = %s
+               """, (i, today))
+        row = cursor.fetchone()
+
+        if row:
+            max_value = max(row)
+            max_column_index = row.index(max_value)
+            columns = ['Angry_s', 'Sad_s', 'Happy_s', 'Fear_s', 'Disgust_s', 'Neutral_s', 'Surprise_s']
+            max_column = columns[max_column_index]
+
+            datalist.append(max_column)
+
+        cursor.execute("""
+                           SELECT
+                               Looking_Forward_s,
+                               Looking_Left_s,
+                               Looking_Right_s,
+                               Looking_Up_s,
+                               Looking_Down_s
+                           FROM head_pose_data
+                           WHERE user_id = %s AND DATE(timestamp) = %s
+                       """, (i, today))
+        row = cursor.fetchone()
+
+        if row:
+            max_value = max(row)
+            max_column_index = row.index(max_value)
+            columns = ['Looking_Forward_s', 'Looking_Left_s', 'Looking_Right_s', 'Looking_Up_s', 'Looking_Down_s']
+            max_column = columns[max_column_index]
+
+            datalist.append(max_column)
+
+        cursor.execute("""
+                                   SELECT
+                                       Duration_Eyes_Closed_s,
+                                       Duration_Looking_Left_s,
+                                       Duration_Looking_Right_s,
+                                       Duration_Looking_Straight_s
+                                   FROM eye_track_data
+                                   WHERE user_id = %s AND DATE(timestamp) = %s
+                               """, (i, today))
+        row = cursor.fetchone()
+
+        if row:
+            max_value = max(row)
+            max_column_index = row.index(max_value)
+            columns = ['Duration_Eyes_Closed_s', 'Duration_Looking_Left_s', 'Duration_Looking_Right_s',
+                       'Duration_Looking_Straight_s']
+            max_column = columns[max_column_index]
+
+            datalist.append(max_column)
+
+        if 'Happy_s' in datalist and 'Duration_Looking_Straight_s' in datalist and 'Looking_Forward_s' in datalist:
+            focussed += 1
+        else:
+            not_focussed += 1
+
+    conn.close()
+
+    return {
+        'focussed': focussed,
+        'not_focussed': not_focussed
+    }
+
+
+@app.route('/get_data_today')
+def get_data_today():
+    logger.debug("Entering get_data_today method")
+    try:
+        today_data = fetch_focus_data_today()
+        logger.info('Fetched today data:', today_data)
+        return jsonify(today_data)
+    except Exception as e:
+        logger.error('Error fetching today data:', exc_info=True)
+        return jsonify({'error': str(e)})
+
+
+
 @app.route('/video_feed')
 def video_feed():
     from video_monitor import generate_frames  # Import inside the function to avoid circular import
