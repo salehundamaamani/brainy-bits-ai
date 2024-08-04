@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask import Flask, render_template, Response, jsonify
 from config import logger
 from db_utils import create_database_tables

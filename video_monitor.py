@@ -332,32 +332,3 @@ def generate_frames():
             db_conn.close()
             logger.info("video_monitor: Database connection closed.")
 
-        with open(get_abs_path('results', 'eye_tracking_data.csv'), 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(
-                ["Person ID", "Duration Eyes Closed (s)", "Duration Looking Left (s)", "Duration Looking Right (s)",
-                 "Duration Looking Straight (s)", "Left Counts", "Right Counts", "Straight Counts"])
-            for person_id in duration_eyes_closed:
-                writer.writerow([person_id, duration_eyes_closed[person_id], duration_looking_left[person_id],
-                                 duration_looking_right[person_id], duration_looking_straight[person_id],
-                                 count_left[person_id], count_right[person_id], count_straight[person_id]])
-
-        with open(get_abs_path('results', 'emotion_detection_data.csv'), 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(["Person ID", "Angry (s)", "Sad (s)", "Happy (s)", "Fear (s)", "Disgust (s)", "Neutral (s)",
-                             "Surprise (s)"])
-            for person_id in emotion_duration["angry"]:
-                writer.writerow([person_id, emotion_duration["angry"][person_id], emotion_duration["sad"][person_id],
-                                 emotion_duration["happy"][person_id], emotion_duration["fear"][person_id],
-                                 emotion_duration["disgust"][person_id], emotion_duration["neutral"][person_id],
-                                 emotion_duration["surprise"][person_id]])
-
-        with open(get_abs_path('results', 'head_pose_data.csv'), 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(
-                ["Person ID", "Looking Forward (s)", "Looking Left (s)", "Looking Right (s)", "Looking Up (s)",
-                 "Looking Down (s)"])
-            for person_id in time_forward_seconds:
-                writer.writerow([person_id, time_forward_seconds[person_id], time_left_seconds[person_id],
-                                 time_right_seconds[person_id], time_up_seconds[person_id],
-                                 time_down_seconds[person_id]])
