@@ -1,8 +1,13 @@
-from flask import Flask, render_template, Response, jsonify
+from datetime import date
+
+from flask import Flask, request, redirect, render_template, Response, jsonify, url_for
 from config import logger
 from db_utils import create_database_tables
-app = Flask(__name__)
+from flask_wtf.csrf import CSRFProtect
 
+app = Flask(__name__)
+app.secret_key = 'forcontactus'
+csrf = CSRFProtect(app)
 
 @app.route('/init_database', methods=['GET'])
 def init_database():
@@ -33,6 +38,41 @@ def dashboard():
     logger.debug("Rendering dashboard page.")
     return render_template('dashboard.html')
 
+
+@app.route('/socials')
+def socials():
+    return render_template('socials.html')
+
+@app.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
+@app.route('/privacy_policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
+@app.route('/terms_of_service')
+def terms_of_service():
+    return render_template('terms_of_service.html')
+
+@app.route('/advertise')
+def advertise():
+    return render_template('advertise.html')
+
+@app.route('/contact_us', methods=['GET', 'POST'])
+def contact_us():
+    if request.method == 'POST':
+        # Process the form data here
+        # name = request.form.get('name')
+        # email = request.form.get('email')
+        # message = request.form.get('message')
+
+        # After processing, redirect or respond accordingly
+        return redirect(url_for('contact_us'))  # Or any other relevant route
+    return render_template('contact_us.html')
+
+@app.route('/team_details')
+def team_details():
+    return render_template('team_details.html')
 
 def fetch_focus_data():
     from db_utils import get_db_connection

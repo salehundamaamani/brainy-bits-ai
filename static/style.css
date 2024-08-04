@@ -1,11 +1,21 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 body {
     font-family: 'Roboto', Arial, sans-serif;
+<<<<<<< HEAD
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     overflow-x: hidden; /* Prevent horizontal overflow */
+=======
+    display: flex;
+    flex-direction: column;
+>>>>>>> a10e3aeb316d84a801946425388d9bbd0b442d69
 }
 
 .header {
@@ -80,11 +90,12 @@ body {
     color: #ffffff;
 }
 
-.container {
+.content {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+<<<<<<< HEAD
     position: relative; /* Ensure it's above video */
     z-index: 5; /* Higher than video, lower than header */
     padding-top: 70px; /* Offset for fixed header */
@@ -94,9 +105,19 @@ body {
 .footer {
     background-color: rgba(154, 200, 205, 0.8); /* Translucent color using #9AC8CD */
     color: #ffffff; /* White color for footer content */
+=======
+    background: url('/static/images/your-image.jpg') no-repeat center center; /* Adjust the path to your image */
+    background-size: cover; /* Ensure the image covers the full area */
+}
+
+.footer {
+    background-color: #CED5DD;  /* Updated background color */
+    color: #333333;  /* Text color for readability */
+>>>>>>> a10e3aeb316d84a801946425388d9bbd0b442d69
     text-align: center;
-    padding: 10px 0;
+    padding: 20px 0;
     width: 100%;
+<<<<<<< HEAD
     position: fixed; /* Keep footer fixed at the bottom */
     bottom: 0;
     z-index: 10; /* Ensures the footer is above the video */
@@ -113,10 +134,27 @@ body {
     height: 100%;
     z-index: 1; /* Video behind other content */
     overflow: hidden; /* Hide overflow */
+=======
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
 }
 
-.video-container video {
+.footer .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+>>>>>>> a10e3aeb316d84a801946425388d9bbd0b442d69
+}
+
+.footer .row {
+    display: flex;
+    justify-content: space-between;
     width: 100%;
+<<<<<<< HEAD
     height: 100%;
     object-fit: cover; /* Ensure video covers the whole area */
     position: absolute;
@@ -170,4 +208,53 @@ body {
     margin: 20px;
     text-decoration: none;
     color: #007BFF;
+=======
+    margin: 0;
+>>>>>>> a10e3aeb316d84a801946425388d9bbd0b442d69
+}
+
+.footer-section {
+    margin: 10px;
+}
+
+.footer-heading {
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #333333;  /* Ensure headings are readable */
+}
+
+.footer-links {
+    margin: 5px 0;
+    font-weight: 400;
+}
+
+.footer-links a {
+    color: #333333;  /* Text color for readability */
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px;
+    font-size: 16px;
+}
+
+.footer-links a:hover {
+    color: #007bff;
+}
+
+.footer-bottom {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px; /* Adjust margin to minimize gap */
+    font-weight: 400;
+    color: #333333;  /* Text color for readability */
+}
+
+.social-icon {
+    font-size: 24px;
+    margin: 0 10px;
+    color: #333333;  /* Text color for readability */
+    transition: color 0.3s;
+}
+
+.social-icon:hover {
+    color: #007bff;
 }
