@@ -27,7 +27,6 @@ def home():
     logger.debug("Rendering home page.")
     return render_template('index.html')
 
-
 @app.route('/classroom_monitoring')
 def classroom_monitoring():
     logger.debug("Rendering classroom monitoring page.")

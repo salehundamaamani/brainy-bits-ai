@@ -1,222 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        .chart-container {
-            margin: 20px 0;
-            text-align: center;
-        }
-        .pie-chart {
-            width: 300px;
-            height: 300px;
-            margin: 0 auto;
-        }
-        #lineChartContainer {
-            width: 100%;
-            height: 400px;
-        }
-        .back-link {
-            display: block;
-            text-align: center;
-            margin: 20px;
-            text-decoration: none;
-            color: #007BFF;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Dashboard</h1>
-    </header>
-    <main>
-        <div class="charts">
-            <div class="chart-container">
-                <h2>Today</h2>
-                <div id="todayChart" class="pie-chart"></div>
-            </div>
-            <div class="chart-container">
-                <h2>Weekly</h2>
-                <div id="weeklyChart" class="pie-chart"></div>
-            </div>
-        </div>
-        <div id="lineChartContainer">
-            <h2>Focus Over Time</h2>
-            <svg id="lineChart"></svg>
-        </div>
-    </main>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+{% extends "base.html" %}
 
-            fetch('/get_data')
-                .then(response => response.json())
-                .then(data => {
-                    const weeklyPieData = [
-                        { label: "Neutral", value: data.neutral },
-                        { label: "Not Neutral", value: data.not_neutral }
-                    ];
-                    drawPieChart('#weeklyChart', weeklyPieData);
-                })
-                .catch(error => console.error('Error fetching weekly data:', error));
+{% block title %}Dashboard{% endblock %}
 
-            fetch('/get_data_today')
-                .then(response => response.json())
-                .then(data => {
-                    const todayPieData = [
-                        { label: "Focussed", value: data.focussed },
-                        { label: "Not Focussed", value: data.not_focussed }
-                    ];
-                    drawPieChart('#todayChart', todayPieData);
-                })
-                .catch(error => console.error('Error fetching today data:', error));
+{% block content %}
+<div class="chart-container">
+    <div class="chart">
+        <h2>Data Distribution</h2>
+        <canvas id="pieChart"></canvas>
+    </div>
+    <div class="chart">
+        <h2>Today's Data</h2>
+        <canvas id="pieChartToday"></canvas>
+    </div>
+</div>
+<div class="line-chart-container">
+    <h2>Weekly Data</h2>
+    <canvas id="lineChart"></canvas>
+</div>
 
-            // Fetch weekly line chart data
-            fetch('/get_weekly_data')
-                .then(response => response.json())
-                .then(data => {
-                    drawLineChart(data);
-                })
-                .catch(error => console.error('Error fetching line chart data:', error));
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    fetch('/get_data')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        data: Object.values(data),
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                    }]
+                }
+            });
         });
 
-        function drawPieChart(selector, data) {
-            let width = 300, height = 300, radius = Math.min(width, height) / 2;
-            let svg = d3.select(selector)
-                .append('svg')
-                .attr('width', width)
-                .attr('height', height)
-                .attr('xmlns', 'http://www.w3.org/2000/svg')
-                .append('g')
-                .attr('transform', `translate(${width / 2}, ${height / 2})`);
+    fetch('/get_data_today')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('pieChartToday').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        data: Object.values(data),
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                    }]
+                }
+            });
+        });
 
-            let color = d3.scaleOrdinal(['#01FF48', '#F98080']);
-            let pie = d3.pie().value(d => d.value);
-            let path = d3.arc().outerRadius(radius).innerRadius(0);
-
-            let arc = svg.selectAll('arc')
-                .data(pie(data))
-                .enter()
-                .append('g')
-                .attr('class', 'arc');
-
-            arc.append('path')
-                .attr('d', path)
-                .attr('fill', d => color(d.data.label));
-
-            arc.append('text')
-                .attr('transform', d => `translate(${path.centroid(d)})`)
-                .attr('dy', '0.35em')
-                .attr('text-anchor', 'middle')
-                .text(d => `${d.data.label}: ${d.data.value}`);
-        }
-
-        function drawLineChart(data) {
-    let margin = { top: 20, right: 30, bottom: 30, left: 40 };
-    let width = document.getElementById('lineChartContainer').clientWidth - margin.left - margin.right;
-    let height = 400 - margin.top - margin.bottom;
-
-    // Create the SVG container
-    let svg = d3.select('#lineChart')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .html("") // Clear previous contents
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`);
-
-    // Define scales for the axes
-    let x = d3.scaleTime()
-        .domain(d3.extent(data, d => new Date(d.date)))
-        .range([0, width]);
-
-    let y = d3.scaleLinear()
-        .domain([0, d3.max(data, d => Math.max(d.focused, d.not_focused))])
-        .range([height, 0]);
-
-    // Define the line generators
-    let lineFocused = d3.line()
-        .x(d => x(new Date(d.date)))
-        .y(d => y(d.focused));
-
-    let lineNotFocused = d3.line()
-        .x(d => x(new Date(d.date)))
-        .y(d => y(d.not_focused));
-
-    // Add X axis with animation
-    svg.append('g')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x).ticks(d3.timeDay.every(1)).tickFormat(d3.timeFormat('%b %d')))
-        .transition()
-        .duration(1000)
-        .style('opacity', 1);
-
-    // Add Y axis with animation
-    svg.append('g')
-        .call(d3.axisLeft(y))
-        .transition()
-        .duration(1000)
-        .style('opacity', 1);
-
-    // Add the focused line with animation
-    const focusedPath = svg.append('path')
-        .datum(data)
-        .attr('fill', 'none')
-        .attr('stroke', '#01FF48')
-        .attr('stroke-width', 1.5)
-        .attr('d', lineFocused);
-
-    const totalLengthFocused = focusedPath.node().getTotalLength();
-
-    focusedPath
-        .attr('stroke-dasharray', `${totalLengthFocused} ${totalLengthFocused}`)
-        .attr('stroke-dashoffset', totalLengthFocused)
-        .transition()
-        .duration(2000)
-        .ease(d3.easeLinear)
-        .attr('stroke-dashoffset', 0);
-
-    // Add the not focused line with animation
-    const notFocusedPath = svg.append('path')
-        .datum(data)
-        .attr('fill', 'none')
-        .attr('stroke', '#F98080')
-        .attr('stroke-width', 1.5)
-        .attr('d', lineNotFocused);
-
-    const totalLengthNotFocused = notFocusedPath.node().getTotalLength();
-
-    notFocusedPath
-        .attr('stroke-dasharray', `${totalLengthNotFocused} ${totalLengthNotFocused}`)
-        .attr('stroke-dashoffset', totalLengthNotFocused)
-        .transition()
-        .duration(2000)
-        .ease(d3.easeLinear)
-        .attr('stroke-dashoffset', 0);
-
-    // Add labels for the lines
-    svg.append('text')
-        .attr('x', width - 6)
-        .attr('y', y(data[0].focused))
-        .attr('dy', '.35em')
-        .attr('text-anchor', 'end')
-        .style('fill', '#01FF48')
-        .text('Focused');
-
-    svg.append('text')
-        .attr('x', width - 6)
-        .attr('y', y(data[0].not_focused))
-        .attr('dy', '.35em')
-        .attr('text-anchor', 'end')
-        .style('fill', '#F98080')
-        .text('Not Focused');
-}
-
-
-    </script>
-    <div>
-        <a href="/" class="back-link">Back to Home</a>
-    </div>
-</body>
-</html>
+    fetch('/get_weekly_data')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.date);
+            const focusedData = data.map(item => item.focused);
+            const notFocusedData = data.map(item => item.not_focused);
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Focused',
+                        data: focusedData,
+                        borderColor: '#36A2EB',
+                        fill: false
+                    }, {
+                        label: 'Not Focused',
+                        data: notFocusedData,
+                        borderColor: '#FF6384',
+                        fill: false
+                    }]
+                }
+            });
+        });
+</script>
+{% endblock %}
