@@ -102,7 +102,7 @@ def fetch_focus_data():
                        Neutral_s,
                        Surprise_s
                    FROM emotion_detect_data
-                   WHERE user_id = %s
+                   WHERE user_id = %s AND Date >= CURDATE() - INTERVAL 7 DAY
                """, (i,))
         row = cursor.fetchone()
 
@@ -123,7 +123,7 @@ def fetch_focus_data():
                                Looking_Up_s,
                                Looking_Down_s
                            FROM head_pose_data
-                           WHERE user_id = %s
+                           WHERE user_id = %s AND Date >= CURDATE() - INTERVAL 7 DAY
                        """, (i,))
         row = cursor.fetchone()
 
@@ -143,7 +143,7 @@ def fetch_focus_data():
                                        Duration_Looking_Right_s,
                                        Duration_Looking_Straight_s
                                    FROM eye_track_data
-                                   WHERE user_id = %s
+                                   WHERE user_id = %s AND Date >= CURDATE() - INTERVAL 7 DAY
                                """, (i,))
         row = cursor.fetchone()
 
@@ -157,10 +157,24 @@ def fetch_focus_data():
             print('eye-tracking: ', max_column)
             datalist.append(max_column)
 
-        if 'Happy_s' in datalist and 'Duration_Looking_Straight_s' in datalist and 'Looking_Forward_s' in datalist:
+        if ('Happy_s' in datalist or 'Neutral_s' in datalist) and 'Duration_Looking_Straight_s' in datalist:
+            focussed += 1
+        elif 'Looking_Down_s' in datalist or 'Duration_Eyes_Closed_s' in datalist or 'Angry_s' in datalist or 'Fear_s' in datalist or 'Surprise_s' in datalist:
+            not_focussed += 1
+        elif 'Looking_Forward' in datalist and (
+                'Duration_Looking_Left_s' in datalist or 'Duration_Looking_Right_s' in datalist):
+            not_focussed += 1
+        elif 'Sad_s' in datalist and 'Duration_Eyes_Closed_s' in datalist:
+            not_focussed += 1
+        elif 'Sad_s' in datalist and 'Looking_Forward_s' not in datalist:
+            not_focussed += 1
+        elif 'Duration_Looking_Left_s' in datalist and 'Looking_Left_s' in datalist:
+            focussed += 1
+        elif 'Duration_Right_Left_s' in datalist and 'Looking_Right_s' in datalist:
             focussed += 1
         else:
-            not_focussed += 1
+            focussed += 1
+
     conn.close()
 
     print(focussed, 'and ', not_focussed)
@@ -266,10 +280,23 @@ def fetch_focus_data_today():
 
             datalist.append(max_column)
 
-        if 'Happy_s' in datalist and 'Duration_Looking_Straight_s' in datalist and 'Looking_Forward_s' in datalist:
+        if ('Happy_s' in datalist or 'Neutral_s' in datalist) and 'Duration_Looking_Straight_s' in datalist:
+            focussed += 1
+        elif 'Looking_Down_s' in datalist or 'Duration_Eyes_Closed_s' in datalist or 'Angry_s' in datalist or 'Fear_s' in datalist or 'Surprise_s' in datalist:
+            not_focussed += 1
+        elif 'Looking_Forward' in datalist and (
+                'Duration_Looking_Left_s' in datalist or 'Duration_Looking_Right_s' in datalist):
+            not_focussed += 1
+        elif 'Sad_s' in datalist and 'Duration_Eyes_Closed_s' in datalist:
+            not_focussed += 1
+        elif 'Sad_s' in datalist and 'Looking_Forward_s' not in datalist:
+            not_focussed += 1
+        elif 'Duration_Looking_Left_s' in datalist and 'Looking_Left_s' in datalist:
+            focussed += 1
+        elif 'Duration_Right_Left_s' in datalist and 'Looking_Right_s' in datalist:
             focussed += 1
         else:
-            not_focussed += 1
+            focussed += 1
 
     conn.close()
 
