@@ -3,186 +3,79 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<header>
-    <h1>Dashboard</h1>
-</header>
-<main>
-    <div class="charts">
-        <div class="chart-container">
-            <h2>Today</h2>
-            <canvas id="todayChart" class="pie-chart"></canvas>
-        </div>
-        <div class="chart-container">
-            <h2>Weekly</h2>
-            <canvas id="weeklyChart" class="pie-chart"></canvas>
-        </div>
+<div class="chart-container">
+    <div class="chart">
+        <h2>Data Distribution</h2>
+        <canvas id="pieChart"></canvas>
     </div>
-    <div id="lineChartContainer">
-        <h2>Focus Over Time</h2>
-        <svg id="lineChart"></svg>
+    <div class="chart">
+        <h2>Today's Data</h2>
+        <canvas id="pieChartToday"></canvas>
     </div>
-</main>
-<a href="/" class="back-link">Back to Home</a>
+</div>
+<div class="line-chart-container">
+    <h2>Weekly Data</h2>
+    <canvas id="lineChart"></canvas>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        fetch('/get_data')
-            .then(response => response.json())
-            .then(data => {
-                const weeklyPieData = {
-                    labels: ["Neutral", "Not Neutral"],
+    fetch('/get_data')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(data),
                     datasets: [{
-                        data: [data.neutral, data.not_neutral],
-                        backgroundColor: ['#01FF48', '#F98080']
+                        data: Object.values(data),
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
                     }]
-                };
-                drawPieChart('weeklyChart', weeklyPieData);
-            })
-            .catch(error => console.error('Error fetching weekly data:', error));
-
-        fetch('/get_data_today')
-            .then(response => response.json())
-            .then(data => {
-                const todayPieData = {
-                    labels: ["Focussed", "Not Focussed"],
-                    datasets: [{
-                        data: [data.focussed, data.not_focussed],
-                        backgroundColor: ['#01FF48', '#F98080']
-                    }]
-                };
-                drawPieChart('todayChart', todayPieData);
-            })
-            .catch(error => console.error('Error fetching today data:', error));
-
-        fetch('/get_weekly_data')
-            .then(response => response.json())
-            .then(data => {
-                drawLineChart(data);
-            })
-            .catch(error => console.error('Error fetching line chart data:', error));
-    });
-
-    function drawPieChart(canvasId, data) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: data,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                let label = tooltipItem.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                label += tooltipItem.raw;
-                                return label;
-                            }
-                        }
-                    }
                 }
-            }
+            });
         });
-    }
 
-    function drawLineChart(data) {
-        let margin = { top: 20, right: 30, bottom: 30, left: 40 };
-        let width = document.getElementById('lineChartContainer').clientWidth - margin.left - margin.right;
-        let height = 400 - margin.top - margin.bottom;
+    fetch('/get_data_today')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('pieChartToday').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        data: Object.values(data),
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                    }]
+                }
+            });
+        });
 
-        let svg = d3.select('#lineChart')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
-            .html("") // Clear previous contents
-            .append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`);
-
-        let x = d3.scaleTime()
-            .domain(d3.extent(data, d => new Date(d.date)))
-            .range([0, width]);
-
-        let y = d3.scaleLinear()
-            .domain([0, d3.max(data, d => Math.max(d.focused, d.not_focused))])
-            .range([height, 0]);
-
-        let lineFocused = d3.line()
-            .x(d => x(new Date(d.date)))
-            .y(d => y(d.focused));
-
-        let lineNotFocused = d3.line()
-            .x(d => x(new Date(d.date)))
-            .y(d => y(d.not_focused));
-
-        svg.append('g')
-            .attr('transform', `translate(0,${height})`)
-            .call(d3.axisBottom(x).ticks(d3.timeDay.every(1)).tickFormat(d3.timeFormat('%b %d')))
-            .transition()
-            .duration(1000)
-            .style('opacity', 1);
-
-        svg.append('g')
-            .call(d3.axisLeft(y))
-            .transition()
-            .duration(1000)
-            .style('opacity', 1);
-
-        const focusedPath = svg.append('path')
-            .datum(data)
-            .attr('fill', 'none')
-            .attr('stroke', '#01FF48')
-            .attr('stroke-width', 1.5)
-            .attr('d', lineFocused);
-
-        const totalLengthFocused = focusedPath.node().getTotalLength();
-
-        focusedPath
-            .attr('stroke-dasharray', `${totalLengthFocused} ${totalLengthFocused}`)
-            .attr('stroke-dashoffset', totalLengthFocused)
-            .transition()
-            .duration(2000)
-            .ease(d3.easeLinear)
-            .attr('stroke-dashoffset', 0);
-
-        const notFocusedPath = svg.append('path')
-            .datum(data)
-            .attr('fill', 'none')
-            .attr('stroke', '#F98080')
-            .attr('stroke-width', 1.5)
-            .attr('d', lineNotFocused);
-
-        const totalLengthNotFocused = notFocusedPath.node().getTotalLength();
-
-        notFocusedPath
-            .attr('stroke-dasharray', `${totalLengthNotFocused} ${totalLengthNotFocused}`)
-            .attr('stroke-dashoffset', totalLengthNotFocused)
-            .transition()
-            .duration(2000)
-            .ease(d3.easeLinear)
-            .attr('stroke-dashoffset', 0);
-
-        svg.append('text')
-            .attr('x', width - 6)
-            .attr('y', y(data[0].focused))
-            .attr('dy', '.35em')
-            .attr('text-anchor', 'end')
-            .style('fill', '#01FF48')
-            .text('Focused');
-
-        svg.append('text')
-            .attr('x', width - 6)
-            .attr('y', y(data[0].not_focused))
-            .attr('dy', '.35em')
-            .attr('text-anchor', 'end')
-            .style('fill', '#F98080')
-            .text('Not Focused');
-    }
+    fetch('/get_weekly_data')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.date);
+            const focusedData = data.map(item => item.focused);
+            const notFocusedData = data.map(item => item.not_focused);
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Focused',
+                        data: focusedData,
+                        borderColor: '#36A2EB',
+                        fill: false
+                    }, {
+                        label: 'Not Focused',
+                        data: notFocusedData,
+                        borderColor: '#FF6384',
+                        fill: false
+                    }]
+                }
+            });
+        });
 </script>
 {% endblock %}
