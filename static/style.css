@@ -5,61 +5,38 @@ html, body {
 
 body {
     font-family: 'Roboto', Arial, sans-serif;
-<<<<<<< HEAD
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    overflow-x: hidden; /* Prevent horizontal overflow */
-=======
-    display: flex;
-    flex-direction: column;
->>>>>>> a10e3aeb316d84a801946425388d9bbd0b442d69
 }
 
 .header {
-    background-color: rgba(154, 200, 205, 0.8); /* Translucent color using #9AC8CD */
-    color: #ffffff; /* White text color for links */
+    background-color: #ffffff;
+    color: #333333;
     padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    position: fixed; /* Keep header fixed at the top */
-    top: 0;
-    z-index: 10; /* Ensures the header is above the video */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* Subtle bottom border */
-    backdrop-filter: blur(5px); /* Optional blur effect for modern look */
-    box-sizing: border-box; /* Ensure padding and border are included in the width */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Adding a subtle shadow */
 }
 
 .logo-container {
     display: flex;
     align-items: center;
-    flex-shrink: 0; /* Prevents the logo from shrinking */
 }
 
 .header img {
-    height: 40px; /* Adjusted size for better fit */
-    margin-right: 10px; /* Adjusted margin */
-    border: none;  /* Remove border */
+    height: 50px;
+    margin-right: 20px;
+    border: 2px solid #333333;  /* Darker border for better visibility */
+    border-radius: 5px;  /* Optional: rounded corners */
 }
 
 .header h1 {
     margin: 0;
-    font-size: 20px; /* Adjusted font size for better fit */
-    font-family: 'Roboto', sans-serif; /* Subtle, modern font */
-    font-weight: 300; /* Light font weight for a subtle look */
-    color: #ffffff; /* White color for "Brainy Bits" heading */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Subtle text shadow */
-}
-
-.header nav {
-    flex-grow: 1; /* Allow nav to grow and fill space */
-    display: flex;
-    justify-content: flex-end; /* Align items to the right */
-    margin-left: 20px; /* Space between logo and nav */
+    font-size: 24px;
+    font-family: 'Pacifico', cursive;  /* Changed font */
+    color: #333333;  /* Ensure the text color matches the theme */
 }
 
 .header nav ul {
@@ -67,27 +44,25 @@ body {
     padding: 0;
     margin: 0;
     display: flex;
-    gap: 10px; /* Adjusted gap for better fit */
+    gap: 15px;  /* Added gap between items */
 }
 
 .header nav ul li {
-    margin-left: 0;
+    margin-left: 10px;  /* Moved links slightly to the left */
 }
 
 .header nav ul li a {
-    color: #ffffff; /* White text color */
+    color: #333333;
     text-decoration: none;
-    font-size: 14px; /* Adjusted font size */
-    padding: 8px 15px; /* Adjusted padding for better fit */
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 10px 20px;
     border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
 }
 
 .header nav ul li a:hover {
-    background-color: rgba(0, 0, 0, 0.7);  /* Darker on hover */
-    transform: scale(1.05); /* Slightly enlarge on hover */
-    color: #ffffff;
+    background-color: #eeeeee;  /* Light background on hover */
+    color: #333333;
 }
 
 .content {
@@ -95,17 +70,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-<<<<<<< HEAD
-    position: relative; /* Ensure it's above video */
-    z-index: 5; /* Higher than video, lower than header */
-    padding-top: 70px; /* Offset for fixed header */
-    box-sizing: border-box; /* Ensure padding is included in the width */
-}
-
-.footer {
-    background-color: rgba(154, 200, 205, 0.8); /* Translucent color using #9AC8CD */
-    color: #ffffff; /* White color for footer content */
-=======
     background: url('/static/images/your-image.jpg') no-repeat center center; /* Adjust the path to your image */
     background-size: cover; /* Ensure the image covers the full area */
 }
@@ -113,28 +77,9 @@ body {
 .footer {
     background-color: #CED5DD;  /* Updated background color */
     color: #333333;  /* Text color for readability */
->>>>>>> a10e3aeb316d84a801946425388d9bbd0b442d69
     text-align: center;
     padding: 20px 0;
     width: 100%;
-<<<<<<< HEAD
-    position: fixed; /* Keep footer fixed at the bottom */
-    bottom: 0;
-    z-index: 10; /* Ensures the footer is above the video */
-    border-top: 1px solid rgba(255, 255, 255, 0.3); /* Subtle top border */
-    backdrop-filter: blur(5px); /* Optional blur effect for modern look */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Subtle text shadow */
-}
-
-.video-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1; /* Video behind other content */
-    overflow: hidden; /* Hide overflow */
-=======
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: center;
@@ -147,70 +92,13 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
->>>>>>> a10e3aeb316d84a801946425388d9bbd0b442d69
 }
 
 .footer .row {
     display: flex;
     justify-content: space-between;
     width: 100%;
-<<<<<<< HEAD
-    height: 100%;
-    object-fit: cover; /* Ensure video covers the whole area */
-    position: absolute;
-    top: 0;
-    left: 0;
-    filter: brightness(0.85); /* Darken video for better text contrast */
-}
-
-@media (max-width: 768px) {
-    .header nav ul {
-        flex-direction: column;
-        background-color: rgba(0, 0, 0, 0.7); /* Solid background for mobile */
-        border-radius: 0;
-        padding: 10px; /* Add padding for touch targets */
-    }
-
-    .header nav ul li {
-        margin: 0;
-        text-align: center;
-    }
-
-    .header nav ul li a {
-        display: block;
-        padding: 15px 20px;
-        border-radius: 0;
-    }
-
-    .header h1 {
-        font-size: 18px; /* Adjusted font size for mobile */
-    }
-}
-.chart-container {
-    margin: 20px 0;
-    text-align: center;
-}
-
-.pie-chart {
-    width: 300px;
-    height: 300px;
-    margin: 0 auto;
-}
-
-#lineChartContainer {
-    width: 100%;
-    height: 400px;
-}
-
-.back-link {
-    display: block;
-    text-align: center;
-    margin: 20px;
-    text-decoration: none;
-    color: #007BFF;
-=======
     margin: 0;
->>>>>>> a10e3aeb316d84a801946425388d9bbd0b442d69
 }
 
 .footer-section {
@@ -257,4 +145,178 @@ body {
 
 .social-icon:hover {
     color: #007bff;
+}
+
+.about-background {
+    background-image: url("{{ url_for('static', filename='C1.png') }}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    padding: 60px 0;
+    color: #fff;
+}
+
+.about-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Overlay color */
+    z-index: 1;
+}
+
+.about-content {
+    position: relative;
+    z-index: 2;
+    color: #fff; /* Ensure text is readable over the background */
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.about-content p {
+    animation: fadeIn 1s ease-in-out, slideUp 1s ease-in-out;
+}
+
+.about-content h2 {
+    animation: fadeIn 2s ease-in-out, slideUp 2s ease-in-out;
+}
+
+.text-primary-custom {
+    color: #B1B9C1; /* Adjust the color as necessary */
+}
+
+.animated-title {
+    color: #0056b3;
+    animation: fadeInDown 1s ease-in-out;
+}
+
+.team-intro {
+    margin-bottom: 30px;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.team-member {
+    animation: fadeInUp 2s ease-in-out;
+    margin-bottom: 20px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contact-page {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+}
+
+.contact-form {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.contact-form h2 {
+    color: #0056b3;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    animation: fadeInDown 1s ease-in-out;
+}
+
+.contact-form .form-group {
+    margin-bottom: 20px;
+}
+
+.contact-form .form-control {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    transition: border-color 0.3s;
+}
+
+.contact-form .form-control:focus {
+    border-color: #0056b3;
+    box-shadow: none;
+}
+
+.contact-form button {
+    background-color: #0056b3;
+    border: none;
+    padding: 10px 20px;
+    color: #ffffff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact-form button:hover {
+    background-color: #003d7a;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+.contact-form {
+    background-color: rgba(255, 255, 255, 0.9); /* Adding transparency to see the background */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 1s ease-in-out;
 }
