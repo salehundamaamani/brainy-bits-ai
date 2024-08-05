@@ -194,7 +194,7 @@ def fetch_focus_data_today():
         SELECT
             user_id
         FROM emotion_detect_data
-        WHERE DATE(timestamp) = %s
+        WHERE Date = %s
     """, (today,))
 
     user_id_list = cursor.fetchall()
@@ -214,7 +214,7 @@ def fetch_focus_data_today():
                        Neutral_s,
                        Surprise_s
                    FROM emotion_detect_data
-                   WHERE user_id = %s AND DATE(timestamp) = %s
+                   WHERE user_id = %s AND Date = %s
                """, (i, today))
         row = cursor.fetchone()
 
@@ -234,7 +234,7 @@ def fetch_focus_data_today():
                                Looking_Up_s,
                                Looking_Down_s
                            FROM head_pose_data
-                           WHERE user_id = %s AND DATE(timestamp) = %s
+                           WHERE user_id = %s AND Date = %s
                        """, (i, today))
         row = cursor.fetchone()
 
@@ -253,7 +253,7 @@ def fetch_focus_data_today():
                                        Duration_Looking_Right_s,
                                        Duration_Looking_Straight_s
                                    FROM eye_track_data
-                                   WHERE user_id = %s AND DATE(timestamp) = %s
+                                   WHERE user_id = %s AND Date = %s
                                """, (i, today))
         row = cursor.fetchone()
 
@@ -290,6 +290,45 @@ def get_data_today():
         logger.error('Error fetching today data:', exc_info=True)
         return jsonify({'error': str(e)})
 
+@app.route('/get_weekly_data')
+def get_weekly_data():
+    from db_utils import get_db_connection
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Get the last 7 days' data
+        cursor.execute("""
+            SELECT
+                Date,
+                SUM(Happy_s) AS Happy,
+                SUM(Angry_s) AS Angry,
+                SUM(Sad_s) AS Sad,
+                SUM(Fear_s) AS Fear,
+                SUM(Disgust_s) AS Disgust,
+                SUM(Neutral_s) AS Neutral,
+                SUM(Surprise_s) AS Surprise
+            FROM emotion_detect_data
+            WHERE Date >= CURDATE() - INTERVAL 7 DAY
+            GROUP BY Date
+            ORDER BY Date ASC
+        """)
+
+        weekly_data = cursor.fetchall()
+        formatted_data = [
+            {
+                "date": row[0].strftime('%Y-%m-%d'),
+                "focused": row[2],  # Example: using Happy as focused
+                "not_focused": row[1]  # Example: using Angry as not focused
+            }
+            for row in weekly_data
+        ]
+
+        return jsonify(formatted_data)
+
+    except Exception as e:
+        logger.error('Error fetching weekly data:', exc_info=True)
+        return jsonify({'error': str(e)})
 
 
 @app.route('/video_feed')
