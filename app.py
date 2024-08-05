@@ -102,7 +102,7 @@ def fetch_focus_data():
                        Neutral_s,
                        Surprise_s
                    FROM emotion_detect_data
-                   WHERE user_id = %s
+                   WHERE user_id = %s AND Date >= CURDATE() - INTERVAL 7 DAY
                """, (i,))
         row = cursor.fetchone()
 
@@ -123,7 +123,7 @@ def fetch_focus_data():
                                Looking_Up_s,
                                Looking_Down_s
                            FROM head_pose_data
-                           WHERE user_id = %s
+                           WHERE user_id = %s AND Date >= CURDATE() - INTERVAL 7 DAY
                        """, (i,))
         row = cursor.fetchone()
 
@@ -143,7 +143,7 @@ def fetch_focus_data():
                                        Duration_Looking_Right_s,
                                        Duration_Looking_Straight_s
                                    FROM eye_track_data
-                                   WHERE user_id = %s
+                                   WHERE user_id = %s AND Date >= CURDATE() - INTERVAL 7 DAY
                                """, (i,))
         row = cursor.fetchone()
 
@@ -157,17 +157,31 @@ def fetch_focus_data():
             print('eye-tracking: ', max_column)
             datalist.append(max_column)
 
-        if 'Happy_s' in datalist and 'Duration_Looking_Straight_s' in datalist and 'Looking_Forward_s' in datalist:
+        if ('Happy_s' in datalist or 'Neutral_s' in datalist) and 'Duration_Looking_Straight_s' in datalist:
+            focussed += 1
+        elif 'Looking_Down_s' in datalist or 'Duration_Eyes_Closed_s' in datalist or 'Angry_s' in datalist or 'Fear_s' in datalist or 'Surprise_s' in datalist:
+            not_focussed += 1
+        elif 'Looking_Forward' in datalist and (
+                'Duration_Looking_Left_s' in datalist or 'Duration_Looking_Right_s' in datalist):
+            not_focussed += 1
+        elif 'Sad_s' in datalist and 'Duration_Eyes_Closed_s' in datalist:
+            not_focussed += 1
+        elif 'Sad_s' in datalist and 'Looking_Forward_s' not in datalist:
+            not_focussed += 1
+        elif 'Duration_Looking_Left_s' in datalist and 'Looking_Left_s' in datalist:
+            focussed += 1
+        elif 'Duration_Right_Left_s' in datalist and 'Looking_Right_s' in datalist:
             focussed += 1
         else:
-            not_focussed += 1
+            focussed += 1
+
     conn.close()
 
     print(focussed, 'and ', not_focussed)
 
     return {
-        'neutral': focussed,
-        'not_neutral': not_focussed
+        'Focussed': focussed,
+        'Not Focussed': not_focussed
     }
 
 
@@ -266,10 +280,23 @@ def fetch_focus_data_today():
 
             datalist.append(max_column)
 
-        if 'Happy_s' in datalist and 'Duration_Looking_Straight_s' in datalist and 'Looking_Forward_s' in datalist:
+        if ('Happy_s' in datalist or 'Neutral_s' in datalist) and 'Duration_Looking_Straight_s' in datalist:
+            focussed += 1
+        elif 'Looking_Down_s' in datalist or 'Duration_Eyes_Closed_s' in datalist or 'Angry_s' in datalist or 'Fear_s' in datalist or 'Surprise_s' in datalist:
+            not_focussed += 1
+        elif 'Looking_Forward' in datalist and (
+                'Duration_Looking_Left_s' in datalist or 'Duration_Looking_Right_s' in datalist):
+            not_focussed += 1
+        elif 'Sad_s' in datalist and 'Duration_Eyes_Closed_s' in datalist:
+            not_focussed += 1
+        elif 'Sad_s' in datalist and 'Looking_Forward_s' not in datalist:
+            not_focussed += 1
+        elif 'Duration_Looking_Left_s' in datalist and 'Looking_Left_s' in datalist:
+            focussed += 1
+        elif 'Duration_Right_Left_s' in datalist and 'Looking_Right_s' in datalist:
             focussed += 1
         else:
-            not_focussed += 1
+            focussed += 1
 
     conn.close()
 
@@ -300,35 +327,127 @@ def get_weekly_data():
         # Get the last 7 days' data
         cursor.execute("""
             SELECT
-                Date,
-                SUM(Happy_s) AS Happy,
-                SUM(Angry_s) AS Angry,
-                SUM(Sad_s) AS Sad,
-                SUM(Fear_s) AS Fear,
-                SUM(Disgust_s) AS Disgust,
-                SUM(Neutral_s) AS Neutral,
-                SUM(Surprise_s) AS Surprise
+                Date
             FROM emotion_detect_data
-            WHERE Date >= CURDATE() - INTERVAL 7 DAY
+            WHERE Date >= CURDATE() - INTERVAL 30 DAY
             GROUP BY Date
             ORDER BY Date ASC
         """)
 
         weekly_data = cursor.fetchall()
-        formatted_data = [
-            {
-                "date": row[0].strftime('%Y-%m-%d'),
-                "focused": row[2],  # Example: using Happy as focused
-                "not_focused": row[1]  # Example: using Angry as not focused
-            }
-            for row in weekly_data
-        ]
+        formatted_data = []
+
+        for date_row in weekly_data:
+            date = date_row[0]
+
+            # Fetch user_id list for the current date
+            cursor.execute("""
+                SELECT
+                    user_id
+                FROM emotion_detect_data
+                WHERE Date = %s
+            """, (date,))
+
+            user_id_list = cursor.fetchall()
+            user_id_list = [user_id[0] for user_id in user_id_list]
+
+            focussed = 0
+            not_focussed = 0
+
+            for i in user_id_list:
+                datalist = []
+
+                # Get emotion data
+                cursor.execute("""
+                    SELECT
+                        Angry_s,
+                        Sad_s,
+                        Happy_s,
+                        Fear_s,
+                        Disgust_s,
+                        Neutral_s,
+                        Surprise_s
+                    FROM emotion_detect_data
+                    WHERE user_id = %s AND Date = %s
+                """, (i, date))
+                row = cursor.fetchone()
+
+                if row:
+                    max_value = max(row)
+                    max_column_index = row.index(max_value)
+                    columns = ['Angry_s', 'Sad_s', 'Happy_s', 'Fear_s', 'Disgust_s', 'Neutral_s', 'Surprise_s']
+                    max_column = columns[max_column_index]
+                    datalist.append(max_column)
+
+                # Get head pose data
+                cursor.execute("""
+                    SELECT
+                        Looking_Forward_s,
+                        Looking_Left_s,
+                        Looking_Right_s,
+                        Looking_Up_s,
+                        Looking_Down_s
+                    FROM head_pose_data
+                    WHERE user_id = %s AND Date = %s
+                """, (i, date))
+                row = cursor.fetchone()
+
+                if row:
+                    max_value = max(row)
+                    max_column_index = row.index(max_value)
+                    columns = ['Looking_Forward_s', 'Looking_Left_s', 'Looking_Right_s', 'Looking_Up_s', 'Looking_Down_s']
+                    max_column = columns[max_column_index]
+                    datalist.append(max_column)
+
+                # Get eye track data
+                cursor.execute("""
+                    SELECT
+                        Duration_Eyes_Closed_s,
+                        Duration_Looking_Left_s,
+                        Duration_Looking_Right_s,
+                        Duration_Looking_Straight_s
+                    FROM eye_track_data
+                    WHERE user_id = %s AND Date = %s
+                """, (i, date))
+                row = cursor.fetchone()
+
+                if row:
+                    max_value = max(row)
+                    max_column_index = row.index(max_value)
+                    columns = ['Duration_Eyes_Closed_s', 'Duration_Looking_Left_s', 'Duration_Looking_Right_s', 'Duration_Looking_Straight_s']
+                    max_column = columns[max_column_index]
+                    datalist.append(max_column)
+
+                # Determine focus status
+                if ('Happy_s' in datalist or 'Neutral_s' in datalist) and 'Duration_Looking_Straight_s' in datalist:
+                    focussed += 1
+                elif 'Looking_Down_s' in datalist or 'Duration_Eyes_Closed_s' in datalist or 'Angry_s' in datalist or 'Fear_s' in datalist or 'Surprise_s' in datalist:
+                    not_focussed += 1
+                elif 'Looking_Forward_s' in datalist and ('Duration_Looking_Left_s' in datalist or 'Duration_Looking_Right_s' in datalist):
+                    not_focussed += 1
+                elif 'Sad_s' in datalist and 'Duration_Eyes_Closed_s' in datalist:
+                    not_focussed += 1
+                elif 'Sad_s' in datalist and 'Looking_Forward_s' not in datalist:
+                    not_focussed += 1
+                elif 'Duration_Looking_Left_s' in datalist and 'Looking_Left_s' in datalist:
+                    focussed += 1
+                elif 'Duration_Looking_Right_s' in datalist and 'Looking_Right_s' in datalist:
+                    focussed += 1
+                else:
+                    focussed += 1
+
+            formatted_data.append({
+                "date": date.strftime('%Y-%m-%d'),
+                "focused": focussed,
+                "not_focused": not_focussed
+            })
 
         return jsonify(formatted_data)
 
     except Exception as e:
         logger.error('Error fetching weekly data:', exc_info=True)
         return jsonify({'error': str(e)})
+
 
 
 @app.route('/video_feed')
