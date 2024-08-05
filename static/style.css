@@ -70,7 +70,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('/static/images/your-image.jpg') no-repeat center center; /* Adjust the path to your image */
+    /*background: url('/static/images/your-image.jpg') no-repeat center center; !* Adjust the path to your image *!*/
     background-size: cover; /* Ensure the image covers the full area */
 }
 
@@ -148,7 +148,7 @@ body {
 }
 
 .about-background {
-    background-image: url("{{ url_for('static', filename='C1.png') }}");
+    /*background-image: url("{{ url_for('static', filename='C1.png') }}");*/
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
