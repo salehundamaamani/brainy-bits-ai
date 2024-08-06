@@ -40,6 +40,3 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
 });
-
-
-

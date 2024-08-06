@@ -35,6 +35,8 @@
     </div>
     <div class="content">
         {% block content %}
+        <!-- Add your video element here -->
+        <video src="path/to/your/video.mp4" controls></video>
         {% endblock %}
     </div>
     <footer class="footer bg-primary-custom text-center py-4 mt-auto glass" id="footer">
@@ -85,80 +87,61 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
-    {% block scripts %}
     <script>
+        function setMode(mode) {
+            document.body.classList.remove('light-mode', 'dark-mode', 'pride-mode');
+            document.body.classList.add(mode);
+
+            document.querySelector('.header').classList.remove('light-mode', 'dark-mode', 'pride-mode');
+            document.querySelector('.header').classList.add(mode);
+
+            document.querySelector('.footer').classList.remove('light-mode', 'dark-mode', 'pride-mode');
+            document.querySelector('.footer').classList.add(mode);
+
+            // Change text and link colors for visibility
+            const header = document.getElementById('header');
+            const title = document.getElementById('title');
+            const navLinks = document.getElementById('nav-links');
+            const footer = document.getElementById('footer');
+
+            if (mode === 'dark-mode') {
+                header.style.backgroundColor = '#0D224A';
+                header.style.color = '#fff';
+                title.style.color = '#fff';
+                navLinks.style.color = '#fff';
+                footer.style.backgroundColor = '#0D224A';
+                footer.style.color = '#fff';
+            } else if (mode === 'light-mode') {
+                header.style.backgroundColor = '#0D224A';
+                header.style.color = '#fff';
+                title.style.color = '#333';
+                navLinks.style.color = '#333';
+                footer.style.backgroundColor = '#0D224A';
+                footer.style.color = '#fff';
+            } else if (mode === 'pride-mode') {
+                header.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
+                header.style.color = '#fff';
+                title.style.color = '#fff';
+                navLinks.style.color = '#fff';
+                footer.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
+                footer.style.color = '#fff';
+            }
+        }
+
+        function updateThumbIcon(value) {
+            const themeSlider = document.getElementById('theme-slider');
+            if (value == '1') {
+                themeSlider.style.setProperty('--thumb-image', 'url(/static/sun.png)');
+            } else if (value == '2') {
+                themeSlider.style.setProperty('--thumb-image', 'url(/static/moon.png)');
+            } else if (value == '3') {
+                themeSlider.style.setProperty('--thumb-image', 'url(/static/gayrehaan.png)');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const themeSlider = document.getElementById('theme-slider');
-            const dynamicVideo = document.getElementById('dynamicVideo');
-            const videoSource = document.getElementById('videoSource');
-
-            function updateVideoSource(mode) {
-                if (mode === 'light-mode') {
-                    videoSource.src = "{{ url_for('static', filename='Welcome.mp4') }}";
-                } else if (mode === 'dark-mode') {
-                    videoSource.src = "{{ url_for('static', filename='Welcome_Dark_Mode.mp4') }}";
-                } else if (mode === 'pride-mode') {
-                    videoSource.src = "{{ url_for('static', filename='Welcome_Pride.mp4') }}";
-                }
-                dynamicVideo.load();
-            }
-
-            function setMode(mode) {
-                document.body.classList.remove('light-mode', 'dark-mode', 'pride-mode');
-                document.body.classList.add(mode);
-
-                document.querySelector('.header').classList.remove('light-mode', 'dark-mode', 'pride-mode');
-                document.querySelector('.header').classList.add(mode);
-
-                document.querySelector('.footer').classList.remove('light-mode', 'dark-mode', 'pride-mode');
-                document.querySelector('.footer').classList.add(mode);
-
-                // Change text and link colors for visibility
-                const header = document.getElementById('header');
-                const title = document.getElementById('title');
-                const navLinks = document.getElementById('nav-links');
-                const footer = document.getElementById('footer');
-
-                  if (mode === 'dark-mode') {
-                  header.style.backgroundColor = '#0D224A';
-                  header.style.color = '#fff';
-                  title.style.color = '#fff';
-                  navLinks.style.color = '#fff';
-                  footer.style.backgroundColor = '#0D224A';
-                  footer.style.color = '#fff';
-              } else if (mode === 'light-mode') {
-                  header.style.backgroundColor = '#0D224A';
-                  header.style.color = '#fff';
-                  title.style.color = '#333';
-                  navLinks.style.color = '#333';
-                  footer.style.backgroundColor = '#0D224A';
-                  footer.style.color = '#fff';
-              } else if (mode === 'pride-mode') {
-                    header.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
-                    header.style.color = '#fff';
-                    title.style.color = '#fff';
-                    navLinks.style.color = '#fff';
-                    footer.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
-                    footer.style.color = '#fff';
-                }
-
-                updateVideoSource(mode);
-            }
-
-            function updateThumbIcon(value) {
-                const themeSlider = document.getElementById('theme-slider');
-                if (value == '1') {
-                    themeSlider.style.setProperty('--thumb-image', 'url(/static/sun.png)');
-                } else if (value == '2') {
-                    themeSlider.style.setProperty('--thumb-image', 'url(/static/moon.png)');
-                } else if (value == '3') {
-                    themeSlider.style.setProperty('--thumb-image', 'url(/static/gayrehaan.png)');
-                }
-            }
-
             updateThumbIcon(themeSlider.value);
-            setMode(themeSlider.value == '1' ? 'light-mode' : themeSlider.value == '2' ? 'dark-mode' : 'pride-mode');
-
             themeSlider.addEventListener('input', function () {
                 updateThumbIcon(themeSlider.value);
                 if (themeSlider.value == '1') {
@@ -171,6 +154,5 @@
             });
         });
     </script>
-    {% endblock %}
 </body>
 </html>
