@@ -535,3 +535,17 @@ body.pride-mode {
     background: linear-gradient(90deg, #FFB3BA, #FFDFBA, #FFFFBA, #BAFFC9, #BAE1FF, #D1BAFF, #FFB3E4);
     color: #333333; /* Darker text for better readability */
 }
+.team-member {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.team-photo {
+    width: 150px; /* Set the width */
+    height: 150px; /* Set the height to ensure a square aspect ratio */
+    border-radius: 50%; /* Make the image circular */
+    object-fit: cover; /* Ensure the image covers the area and maintains aspect ratio */
+    margin-bottom: 15px;
+    border: 2px solid #333; /* Optional: Add a border for better visual separation */
+}
+
