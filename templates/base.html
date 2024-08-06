@@ -10,8 +10,8 @@
 <body data-theme="light">
     <div class="header" id="header">
         <div class="logo-container">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo" id="logo">
-            <h1 class="title" id="title">Brainy Bits</h1>
+            <a href="{{ url_for('home') }}"> <img src="{{ url_for('static', filename='logo_boxed.png') }}" alt="Logo" class="logo" id="logo"></a>
+
         </div>
         <nav>
             <ul id="nav-links">
@@ -105,19 +105,19 @@
             const footer = document.getElementById('footer');
 
             if (mode === 'dark-mode') {
-                header.style.backgroundColor = '#333';
+                header.style.backgroundColor = '#0D224A';
                 header.style.color = '#fff';
                 title.style.color = '#fff';
                 navLinks.style.color = '#fff';
-                footer.style.backgroundColor = '#333';
+                footer.style.backgroundColor = '#0D224A';
                 footer.style.color = '#fff';
             } else if (mode === 'light-mode') {
-                header.style.backgroundColor = '#fff';
-                header.style.color = '#333';
+                header.style.backgroundColor = '#0D224A';
+                header.style.color = '#fff';
                 title.style.color = '#333';
                 navLinks.style.color = '#333';
-                footer.style.backgroundColor = '#CED5DD';
-                footer.style.color = '#333';
+                footer.style.backgroundColor = '#0D224A';
+                footer.style.color = '#fff';
             } else if (mode === 'pride-mode') {
                 header.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
                 header.style.color = '#fff';
