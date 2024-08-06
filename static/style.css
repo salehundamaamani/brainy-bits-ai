@@ -147,50 +147,48 @@ body {
     color: #007bff;
 }
 
-.about-background {
-    /*background-image: url("{{ url_for('static', filename='C1.png') }}");*/
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    position: relative;
+/* About Us Page Styles */
+.about-us {
     padding: 60px 0;
-    color: #fff;
+    background-color: #f8f9fa;
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-.about-background::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Overlay color */
-    z-index: 1;
+.about-heading {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #0056b3;
+    animation: fadeInDown 1s ease-in-out;
 }
 
-.about-content {
-    position: relative;
-    z-index: 2;
-    color: #fff; /* Ensure text is readable over the background */
+.about-us p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    animation: fadeIn 1.5s ease-in-out;
 }
 
-@keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+.about-us a {
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
 }
 
-@keyframes slideUp {
-    0% { transform: translateY(20px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
+.about-us a:hover {
+    color: #003d7a;
 }
 
-.about-content p {
-    animation: fadeIn 1s ease-in-out, slideUp 1s ease-in-out;
+.about-us h3 {
+    margin-top: 30px;
+    font-size: 2em;
+    color: #0056b3;
+    animation: fadeInDown 1s ease-in-out;
 }
 
-.about-content h2 {
-    animation: fadeIn 2s ease-in-out, slideUp 2s ease-in-out;
-}
 
 .text-primary-custom {
     color: #B1B9C1; /* Adjust the color as necessary */
