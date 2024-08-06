@@ -506,11 +506,13 @@ body.light-mode {
     color: #333333;
 }
 
+
 .header.light-mode,
 .footer.light-mode {
     background-color: #ffffff;
     color: #333333;
 }
+
 
 /* Dark mode */
 body.dark-mode {
@@ -518,15 +520,17 @@ body.dark-mode {
     color: #ffffff;
 }
 
+
 .header.dark-mode,
 .footer.dark-mode {
     background-color: #333333;
     color: #ffffff;
 }
 
+
 /* Pride mode */
 body.pride-mode {
-    background: linear-gradient(90deg, #FFB3BA, #FFDFBA, #FFFFBA, #BAFFC9, #BAE1FF, #D1BAFF, #FFB3E4);
+    background: #dbdfc0;
     color: #333333; /* Darker text for better readability */
 }
 
