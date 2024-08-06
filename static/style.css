@@ -1,18 +1,18 @@
 html, body {
     height: 100%;
     margin: 0;
-    background-color: #47B5FF;
+    overflow: auto; /* Allow scrolling */
 }
 
 body {
     font-family: 'Roboto', Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    background-color: #47B5FF;
+    min-height: 100vh; /* Ensure the body takes full height of the viewport */
 }
 
 .header {
-    background-color: #06283D;
+    background-color: #ffffff;
     color: #333333;
     padding: 10px 20px;
     display: flex;
@@ -20,6 +20,7 @@ body {
     justify-content: space-between;
     width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Adding a subtle shadow */
+    height: 60px; /* Set a fixed height for the header */
 }
 
 .logo-container {
@@ -67,18 +68,64 @@ body {
     color: #333333;
 }
 
+.mode-slider {
+    display: flex;
+    align-items: center;
+}
+
+.mode-slider input[type="range"] {
+    width: 150px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #007bff, #6c757d, #28a745);
+    height: 10px;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .15s ease-in-out;
+    background-size: cover;
+}
+
+.mode-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    background: var(--thumb-image) center center no-repeat;
+    background-size: cover;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background .15s ease-in-out;
+}
+
+.mode-slider input[type="range"]::-moz-range-thumb {
+    width: 30px;
+    height: 30px;
+    background: var(--thumb-image) center center no-repeat;
+    background-size: cover;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background .15s ease-in-out;
+}
+
 .content {
     flex: 1;
     display: flex;
     justify-content: center;
-    background-color: #06283D;
     align-items: center;
-    /*background: url('/static/images/your-image.jpg') no-repeat center center; !* Adjust the path to your image *!*/
-    background-size: cover; /* Ensure the image covers the full area */
+    /*overflow: hidden; /* Prevent content overflow */
+}
+
+.content video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the video covers the full content area */
 }
 
 .footer {
-    background-color: #CED5DD;  /* Updated background color */
+    background-color: #CED5DD;  /* Set footer background color to match the uploaded image */
     color: #333333;  /* Text color for readability */
     text-align: center;
     padding: 20px 0;
@@ -87,7 +134,8 @@ body {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    position: relative;
+    position: relative; /* Ensure it covers the full area */
+    margin-top: auto; /* Push the footer to the bottom */
 }
 
 .footer .container {
@@ -134,7 +182,6 @@ body {
 .footer-bottom {
     width: 100%;
     text-align: center;
-    margin-top: 10px; /* Adjust margin to minimize gap */
     font-weight: 400;
     color: #333333;  /* Text color for readability */
 }
@@ -151,7 +198,6 @@ body {
 }
 
 .about-background {
-    /*background-image: url("{{ url_for('static', filename='C1.png') }}");*/
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -178,7 +224,7 @@ body {
 }
 
 @keyframes fadeIn {
-    0% { opacity: 0; }
+     0% { opacity: 0; }
     100% { opacity: 1; }
 }
 
@@ -314,8 +360,6 @@ body {
     }
 }
 
-
-
 .contact-form {
     background-color: rgba(255, 255, 255, 0.9); /* Adding transparency to see the background */
     padding: 30px;
@@ -323,6 +367,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     animation: fadeInUp 1s ease-in-out;
 }
+
 /*Dashboard page configuration*/
 .chart-container {
     display: flex;
@@ -351,17 +396,38 @@ body {
     height: 400px;
     text-align: center;
 }
-.video-container {
-    width: 90%;
-    height: 100%;
-    margin: auto;
-
+/* Default (light) mode */
+body.light-mode {
+    background-color: #ffffff;
+    color: #333333;
 }
 
-.video-container video {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 10%;
-    padding: 10px;
+.header.light-mode,
+.footer.light-mode {
+    background-color: #ffffff;
+    color: #333333;
+}
+
+/* Dark mode */
+body.dark-mode {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.header.dark-mode,
+.footer.dark-mode {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+/* Pride mode */
+body.pride-mode {
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    color: #ffffff;
+}
+
+.header.pride-mode,
+.footer.pride-mode {
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    color: #ffffff;
 }
