@@ -83,7 +83,8 @@ def fetch_focus_data():
         SELECT
             user_id
         FROM emotion_detect_data
-        """)
+        WHERE Date >= CURDATE() - INTERVAL 7 DAY
+    """)
 
     user_id_list = cursor.fetchall()
     user_id_list = [user_id[0] for user_id in user_id_list]
@@ -102,7 +103,7 @@ def fetch_focus_data():
                        Neutral_s,
                        Surprise_s
                    FROM emotion_detect_data
-                   WHERE user_id = %s AND Date >= CURDATE() - INTERVAL 7 DAY
+                   WHERE user_id = %s
                """, (i,))
         row = cursor.fetchone()
 
@@ -112,7 +113,6 @@ def fetch_focus_data():
             columns = ['Angry_s', 'Sad_s', 'Happy_s', 'Fear_s', 'Disgust_s', 'Neutral_s', 'Surprise_s']
             max_column = columns[max_column_index]
 
-            print('emotion: ', max_column)
             datalist.append(max_column)
 
         cursor.execute("""
@@ -123,7 +123,7 @@ def fetch_focus_data():
                                Looking_Up_s,
                                Looking_Down_s
                            FROM head_pose_data
-                           WHERE user_id = %s AND Date >= CURDATE() - INTERVAL 7 DAY
+                           WHERE user_id = %s
                        """, (i,))
         row = cursor.fetchone()
 
@@ -133,7 +133,6 @@ def fetch_focus_data():
             columns = ['Looking_Forward_s', 'Looking_Left_s', 'Looking_Right_s', 'Looking_Up_s', 'Looking_Down_s']
             max_column = columns[max_column_index]
 
-            print('head: ', max_column)
             datalist.append(max_column)
 
         cursor.execute("""
@@ -143,7 +142,7 @@ def fetch_focus_data():
                                        Duration_Looking_Right_s,
                                        Duration_Looking_Straight_s
                                    FROM eye_track_data
-                                   WHERE user_id = %s AND Date >= CURDATE() - INTERVAL 7 DAY
+                                   WHERE user_id = %s
                                """, (i,))
         row = cursor.fetchone()
 
@@ -154,7 +153,6 @@ def fetch_focus_data():
                        'Duration_Looking_Straight_s']
             max_column = columns[max_column_index]
 
-            print('eye-tracking: ', max_column)
             datalist.append(max_column)
 
         if ('Happy_s' in datalist or 'Neutral_s' in datalist) and 'Duration_Looking_Straight_s' in datalist:
@@ -176,8 +174,6 @@ def fetch_focus_data():
             focussed += 1
 
     conn.close()
-
-    print(focussed, 'and ', not_focussed)
 
     return {
         'Focussed': focussed,
@@ -301,8 +297,8 @@ def fetch_focus_data_today():
     conn.close()
 
     return {
-        'focussed': focussed,
-        'not_focussed': not_focussed
+        'Focussed': focussed,
+        'Not Focussed': not_focussed
     }
 
 
