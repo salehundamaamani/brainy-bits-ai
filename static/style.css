@@ -1,6 +1,7 @@
 html, body {
     height: 100%;
     margin: 0;
+    padding: 0;
     overflow: auto; /* Allow scrolling */
 }
 
@@ -8,6 +9,7 @@ body {
     font-family: 'Roboto', Arial, sans-serif;
     display: flex;
     flex-direction: column;
+    align-items: center;
     min-height: 100vh; /* Ensure the body takes full height of the viewport */
 }
 
@@ -31,8 +33,8 @@ body {
 .header img {
     height: 50px;
     margin-right: 20px;
-    border: 2px solid #333333;  /* Darker border for better visibility */
-    border-radius: 5px;  /* Optional: rounded corners */
+    border: 2px solid #333333;
+    border-radius: 5px;
 }
 
 .header h1 {
@@ -52,7 +54,7 @@ body {
 }
 
 .header nav ul li {
-    margin-left: 10px;  /* Moved links slightly to the left */
+    margin-left: 10px;
 }
 
 .header nav ul li a {
@@ -134,7 +136,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /*overflow: hidden; /* Prevent content overflow */
+    width: 100%;
 }
 
 .content video {
@@ -146,7 +148,6 @@ body {
     width: 90%;
     height: 100%;
     margin: auto;
-
 }
 
 .video-container video {
@@ -157,8 +158,8 @@ body {
     padding: 10px;
 }
 .footer {
-    background-color: #CED5DD;  /* Set footer background color to match the uploaded image */
-    color: #333333;  /* Text color for readability */
+    background-color: #CED5DD;
+    color: #333333;
     text-align: center;
     padding: 20px 0;
     width: 100%;
@@ -215,8 +216,9 @@ body {
 .footer-bottom {
     width: 100%;
     text-align: center;
+    margin-top: 10px;
     font-weight: 400;
-    color: inherit;  /* Ensure the text color matches the theme */
+    color: inherit;
 }
 
 .social-icon {
@@ -321,12 +323,18 @@ body {
 }
 
 .contact-page {
-    padding: 60px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
     background-color: #f9f9f9;
 }
 
 .contact-form {
-    background-color: #ffffff;
+    width: 100%;
+    max-width: 1200px;
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -355,6 +363,11 @@ body {
 .contact-form .form-control:focus {
     border-color: #0056b3;
     box-shadow: none;
+}
+
+.contact-form .button-container {
+    display: flex;
+    justify-content: center; /* Center the button */
 }
 
 .contact-form button {
