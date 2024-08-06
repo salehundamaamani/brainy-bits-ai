@@ -5,7 +5,7 @@
 {% block content %}
 <div class="chart-container">
     <div class="chart">
-        <h2>Data Distribution</h2>
+        <h2>Weekly Data</h2>
         <canvas id="pieChart"></canvas>
     </div>
     <div class="chart">
@@ -14,7 +14,7 @@
     </div>
 </div>
 <div class="line-chart-container">
-    <h2>Weekly Data</h2>
+    <h2>Data Distribution</h2>
     <canvas id="lineChart"></canvas>
 </div>
 
@@ -30,7 +30,7 @@
                     labels: Object.keys(data),
                     datasets: [{
                         data: Object.values(data),
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56']
                     }]
                 }
             });
@@ -46,7 +46,7 @@
                     labels: Object.keys(data),
                     datasets: [{
                         data: Object.values(data),
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56']
                     }]
                 }
             });
