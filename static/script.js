@@ -38,4 +38,5 @@ document.addEventListener('DOMContentLoaded', function() {
     img.onload = function() {
         setInterval(draw, 10);
     };
+
 });
