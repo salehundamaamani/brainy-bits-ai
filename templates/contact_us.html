@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+ <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+    (function(){
+        emailjs.init("{{ emailjs_public_key }}");
+    })();
+</script>
 <div class="contact-page">
     <div class="contact-form">
         <h2 class="animated-title">Contact Us</h2>
-        <form method="post" class="animated-form">
+        <form id="contact-form" method="post" class="animated-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="form-group">
                 <label for="name">Your Name:</label>
@@ -24,4 +30,28 @@
         </form>
     </div>
 </div>
+<script>
+    document.getElementById('contact-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var name = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
+        var message = document.getElementById('message').value;
+
+        var templateParams = {
+            name: name,
+            email: email,
+            message: message
+        };
+
+        emailjs.send('{{ emailjs_service_id }}', '{{ emailjs_template_id }}', templateParams)
+            .then(function(response) {
+               console.log('SUCCESS!', response.status, response.text);
+               alert('Email sent successfully!');
+            }, function(error) {
+               console.log('FAILED...', error);
+               alert('Failed to send email. Please try again later.');
+            });
+    });
+</script>
 {% endblock %}
