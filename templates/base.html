@@ -87,71 +87,90 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
     <script>
-        function setMode(mode) {
-            document.body.classList.remove('light-mode', 'dark-mode', 'pride-mode');
-            document.body.classList.add(mode);
+function setMode(mode) {
+    const body = document.body;
+    const header = document.getElementById('header');
+    const footer = document.getElementById('footer');
 
-            document.querySelector('.header').classList.remove('light-mode', 'dark-mode', 'pride-mode');
-            document.querySelector('.header').classList.add(mode);
+    // Remove all theme-related classes from body, header, and footer
+    body.classList.remove('light-mode', 'dark-mode', 'pride-mode');
+    header.classList.remove('light-mode', 'dark-mode', 'pride-mode');
+    footer.classList.remove('light-mode', 'dark-mode', 'pride-mode');
 
-            document.querySelector('.footer').classList.remove('light-mode', 'dark-mode', 'pride-mode');
-            document.querySelector('.footer').classList.add(mode);
+    // Add the selected mode class to body, header, and footer
+    body.classList.add(mode);
+    header.classList.add(mode);
+    footer.classList.add(mode);
 
-            // Change text and link colors for visibility
-            const header = document.getElementById('header');
-            const title = document.getElementById('title');
-            const navLinks = document.getElementById('nav-links');
-            const footer = document.getElementById('footer');
+    // Clear inline styles
+    header.style.background = '';
+    header.style.color = '';
+    footer.style.background = '';
+    footer.style.color = '';
 
-            if (mode === 'dark-mode') {
-                header.style.backgroundColor = '#333';
-                header.style.color = '#fff';
-                title.style.color = '#fff';
-                navLinks.style.color = '#fff';
-                footer.style.backgroundColor = '#333';
-                footer.style.color = '#fff';
-            } else if (mode === 'light-mode') {
-                header.style.backgroundColor = '#fff';
-                header.style.color = '#333';
-                title.style.color = '#333';
-                navLinks.style.color = '#333';
-                footer.style.backgroundColor = '#CED5DD';
-                footer.style.color = '#333';
-            } else if (mode === 'pride-mode') {
-                header.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
-                header.style.color = '#fff';
-                title.style.color = '#fff';
-                navLinks.style.color = '#fff';
-                footer.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
-                footer.style.color = '#fff';
-            }
+    // Apply specific inline styles based on the mode
+    if (mode === 'dark-mode') {
+        header.style.backgroundColor = '#333';
+        header.style.color = '#fff';
+        footer.style.backgroundColor = '#333';
+        footer.style.color = '#fff';
+    } else if (mode === 'light-mode') {
+        header.style.backgroundColor = '#fff';
+        header.style.color = '#333';
+        footer.style.backgroundColor = '#CED5DD';
+        footer.style.color = '#333';
+    } else if (mode === 'pride-mode') {
+        header.style.background = 'linear-gradient(90deg, rgba(255,179,186,0.8), rgba(255,223,186,0.8), rgba(255,255,186,0.8), rgba(186,255,201,0.8), rgba(186,225,255,0.8), rgba(209,186,255,0.8), rgba(255,179,228,0.8))';
+        header.style.color = '#333';
+        footer.style.background = 'linear-gradient(90deg, rgba(255,179,186,0.8), rgba(255,223,186,0.8), rgba(255,255,186,0.8), rgba(186,255,201,0.8), rgba(186,225,255,0.8), rgba(209,186,255,0.8), rgba(255,179,228,0.8))';
+        footer.style.color = '#333';
+    }
+
+    // Save the selected mode in localStorage
+    localStorage.setItem('theme', mode);
+}
+
+function updateThumbIcon(value) {
+    const themeSlider = document.getElementById('theme-slider');
+    if (value == '1') {
+        themeSlider.style.setProperty('--thumb-image', 'url(/static/sun.png)');
+    } else if (value == '2') {
+        themeSlider.style.setProperty('--thumb-image', 'url(/static/moon.png)');
+    } else if (value == '3') {
+        themeSlider.style.setProperty('--thumb-image', 'url(/static/gayrehaan.png)');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const themeSlider = document.getElementById('theme-slider');
+
+    // Retrieve the saved theme from localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        setMode(savedTheme);
+
+        if (savedTheme === 'light-mode') {
+            themeSlider.value = '1';
+        } else if (savedTheme === 'dark-mode') {
+            themeSlider.value = '2';
+        } else if (savedTheme === 'pride-mode') {
+            themeSlider.value = '3';
         }
+    }
 
-        function updateThumbIcon(value) {
-            const themeSlider = document.getElementById('theme-slider');
-            if (value == '1') {
-                themeSlider.style.setProperty('--thumb-image', 'url(/static/sun.png)');
-            } else if (value == '2') {
-                themeSlider.style.setProperty('--thumb-image', 'url(/static/moon.png)');
-            } else if (value == '3') {
-                themeSlider.style.setProperty('--thumb-image', 'url(/static/gayrehaan.png)');
-            }
+    updateThumbIcon(themeSlider.value);
+
+    themeSlider.addEventListener('input', function () {
+        updateThumbIcon(themeSlider.value);
+        if (themeSlider.value == '1') {
+            setMode('light-mode');
+        } else if (themeSlider.value == '2') {
+            setMode('dark-mode');
+        } else if (themeSlider.value == '3') {
+            setMode('pride-mode');
         }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const themeSlider = document.getElementById('theme-slider');
-            updateThumbIcon(themeSlider.value);
-            themeSlider.addEventListener('input', function () {
-                updateThumbIcon(themeSlider.value);
-                if (themeSlider.value == '1') {
-                    setMode('light-mode');
-                } else if (themeSlider.value == '2') {
-                    setMode('dark-mode');
-                } else if (themeSlider.value == '3') {
-                    setMode('pride-mode');
-                }
-            });
-        });
-    </script>
+    });
+});
+</script>
 </body>
 </html>

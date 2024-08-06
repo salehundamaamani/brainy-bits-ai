@@ -506,13 +506,11 @@ body.light-mode {
     color: #333333;
 }
 
-
 .header.light-mode,
 .footer.light-mode {
     background-color: #ffffff;
     color: #333333;
 }
-
 
 /* Dark mode */
 body.dark-mode {
@@ -520,13 +518,11 @@ body.dark-mode {
     color: #ffffff;
 }
 
-
 .header.dark-mode,
 .footer.dark-mode {
     background-color: #333333;
     color: #ffffff;
 }
-
 
 /* Pride mode */
 body.pride-mode {
