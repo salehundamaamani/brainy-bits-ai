@@ -7,26 +7,39 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body>
-    <div class="header">
+<body data-theme="light">
+    <div class="header" id="header">
         <div class="logo-container">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
-            <h1 class="title">Brainy Bits</h1>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo" id="logo">
+            <h1 class="title" id="title">Brainy Bits</h1>
         </div>
         <nav>
-            <ul>
+            <ul id="nav-links">
                 {% if request.endpoint != 'home' %}
                 <li><a href="{{ url_for('home') }}">Home</a></li>
                 {% endif %}
                 <li><a href="{{ url_for('classroom_monitoring') }}">Classroom Monitoring</a></li>
                 <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li>
+                    <div class="mode-slider">
+                        <div class="theme-labels">
+                            <span>Light</span>
+                            <span>Dark</span>
+                            <span>Pride</span>
+                        </div>
+                        <input type="range" id="theme-slider" min="1" max="3" value="1" step="1">
+                    </div>
+                </li>
             </ul>
         </nav>
     </div>
     <div class="content">
-        {% block content %}{% endblock %}
+        {% block content %}
+        <!-- Add your video element here -->
+        <video src="path/to/your/video.mp4" controls></video>
+        {% endblock %}
     </div>
-    <footer class="footer bg-primary-custom text-center py-4 mt-auto glass">
+    <footer class="footer bg-primary-custom text-center py-4 mt-auto glass" id="footer">
         <div class="container">
             <div class="row">
                 <div class="col-md-3">
@@ -54,16 +67,15 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-    <h5 class="footer-heading">Business & Policy</h5>
-    <div class="footer-links">
-        <ul class="list-unstyled">
-            <li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li>
-            <li><a href="{{ url_for('terms_of_service') }}">Terms of Service</a></li>
-            <li><a href="{{ url_for('advertise') }}">Advertise</a></li>
-        </ul>
-    </div>
-</div>
-
+                    <h5 class="footer-heading">Business & Policy</h5>
+                    <div class="footer-links">
+                        <ul class="list-unstyled">
+                            <li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li>
+                            <li><a href="{{ url_for('terms_of_service') }}">Terms of Service</a></li>
+                            <li><a href="{{ url_for('advertise') }}">Advertise</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="footer-bottom mt-3">
                 <p>© 2024 BrainyBits. All Rights Reserved.</p>
@@ -75,6 +87,72 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script>
+        function setMode(mode) {
+            document.body.classList.remove('light-mode', 'dark-mode', 'pride-mode');
+            document.body.classList.add(mode);
 
+            document.querySelector('.header').classList.remove('light-mode', 'dark-mode', 'pride-mode');
+            document.querySelector('.header').classList.add(mode);
+
+            document.querySelector('.footer').classList.remove('light-mode', 'dark-mode', 'pride-mode');
+            document.querySelector('.footer').classList.add(mode);
+
+            // Change text and link colors for visibility
+            const header = document.getElementById('header');
+            const title = document.getElementById('title');
+            const navLinks = document.getElementById('nav-links');
+            const footer = document.getElementById('footer');
+
+            if (mode === 'dark-mode') {
+                header.style.backgroundColor = '#333';
+                header.style.color = '#fff';
+                title.style.color = '#fff';
+                navLinks.style.color = '#fff';
+                footer.style.backgroundColor = '#333';
+                footer.style.color = '#fff';
+            } else if (mode === 'light-mode') {
+                header.style.backgroundColor = '#fff';
+                header.style.color = '#333';
+                title.style.color = '#333';
+                navLinks.style.color = '#333';
+                footer.style.backgroundColor = '#CED5DD';
+                footer.style.color = '#333';
+            } else if (mode === 'pride-mode') {
+                header.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
+                header.style.color = '#fff';
+                title.style.color = '#fff';
+                navLinks.style.color = '#fff';
+                footer.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
+                footer.style.color = '#fff';
+            }
+        }
+
+        function updateThumbIcon(value) {
+            const themeSlider = document.getElementById('theme-slider');
+            if (value == '1') {
+                themeSlider.style.setProperty('--thumb-image', 'url(/static/sun.png)');
+            } else if (value == '2') {
+                themeSlider.style.setProperty('--thumb-image', 'url(/static/moon.png)');
+            } else if (value == '3') {
+                themeSlider.style.setProperty('--thumb-image', 'url(/static/gayrehaan.png)');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const themeSlider = document.getElementById('theme-slider');
+            updateThumbIcon(themeSlider.value);
+            themeSlider.addEventListener('input', function () {
+                updateThumbIcon(themeSlider.value);
+                if (themeSlider.value == '1') {
+                    setMode('light-mode');
+                } else if (themeSlider.value == '2') {
+                    setMode('dark-mode');
+                } else if (themeSlider.value == '3') {
+                    setMode('pride-mode');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
