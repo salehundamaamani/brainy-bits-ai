@@ -4,6 +4,7 @@ pandas
 numpy~=1.26.4
 
 Flask~=3.0.3
+Flask-SQLAlchemy~=3.1.1
 mediapipe~=0.10.14
 h5py~=3.11.0
 tensorflow~=2.16.2
@@ -12,3 +13,4 @@ imutils~=0.5.4
 mysql-connector-python~=9.0.0
 python-dotenv~=1.0.1
 flask-wtf~=1.2.1
+cmake~=3.30.2
