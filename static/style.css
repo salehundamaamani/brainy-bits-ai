@@ -16,14 +16,13 @@ body {
 
 
 .header {
-    background-color: #ffffff;
-    color: #333333;
-    padding: 10px 20px;
+    background-color: #0D224A;
+    color: #ffffff;
+    padding: 40px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Adding a subtle shadow */
     height: 60px; /* Set a fixed height for the header */
 }
 
@@ -33,11 +32,13 @@ body {
     align-items: center;
 }
 
+#nav-links {
+    margin-top: 12px;
+}
 
 .header img {
     height: 50px;
     margin-right: 20px;
-    border: 2px solid #333333;
     border-radius: 5px;
 }
 
@@ -177,8 +178,8 @@ body {
     padding: 10px;
 }
 .footer {
-    background-color: #CED5DD;
-    color: #333333;
+    background-color: #0D224A;
+    color: #ffffff;
     text-align: center;
     padding: 20px 0;
     width: 100%;
@@ -509,21 +510,21 @@ body.light-mode {
 
 .header.light-mode,
 .footer.light-mode {
-    background-color: #ffffff;
-    color: #333333;
+    background-color: #0D224A;
+    color: #ffffff;
 }
 
 
 /* Dark mode */
 body.dark-mode {
-    background-color: #333333;
+    background-color: #0D224A;
     color: #ffffff;
 }
 
 
 .header.dark-mode,
 .footer.dark-mode {
-    background-color: #333333;
+    background-color: #0D224A;
     color: #ffffff;
 }
 
