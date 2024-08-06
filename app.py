@@ -9,6 +9,7 @@ app = Flask(__name__)
 app.secret_key = 'forcontactus'
 csrf = CSRFProtect(app)
 
+
 @app.route('/init_database', methods=['GET'])
 def init_database():
     logger.info("Initiating database setup.")
@@ -27,6 +28,7 @@ def home():
     logger.debug("Rendering home page.")
     return render_template('index.html')
 
+
 @app.route('/classroom_monitoring')
 def classroom_monitoring():
     logger.debug("Rendering classroom monitoring page.")
@@ -43,20 +45,26 @@ def dashboard():
 def socials():
     return render_template('socials.html')
 
+
 @app.route('/about_us')
 def about_us():
     return render_template('about_us.html')
+
+
 @app.route('/privacy_policy')
 def privacy_policy():
     return render_template('privacy_policy.html')
+
 
 @app.route('/terms_of_service')
 def terms_of_service():
     return render_template('terms_of_service.html')
 
+
 @app.route('/advertise')
 def advertise():
     return render_template('advertise.html')
+
 
 @app.route('/contact_us', methods=['GET', 'POST'])
 def contact_us():
@@ -70,9 +78,11 @@ def contact_us():
         return redirect(url_for('contact_us'))  # Or any other relevant route
     return render_template('contact_us.html')
 
+
 @app.route('/team_details')
 def team_details():
     return render_template('team_details.html')
+
 
 def fetch_focus_data():
     from db_utils import get_db_connection
@@ -313,6 +323,7 @@ def get_data_today():
         logger.error('Error fetching today data:', exc_info=True)
         return jsonify({'error': str(e)})
 
+
 @app.route('/get_weekly_data')
 def get_weekly_data():
     from db_utils import get_db_connection
@@ -391,7 +402,8 @@ def get_weekly_data():
                 if row:
                     max_value = max(row)
                     max_column_index = row.index(max_value)
-                    columns = ['Looking_Forward_s', 'Looking_Left_s', 'Looking_Right_s', 'Looking_Up_s', 'Looking_Down_s']
+                    columns = ['Looking_Forward_s', 'Looking_Left_s', 'Looking_Right_s', 'Looking_Up_s',
+                               'Looking_Down_s']
                     max_column = columns[max_column_index]
                     datalist.append(max_column)
 
@@ -410,7 +422,8 @@ def get_weekly_data():
                 if row:
                     max_value = max(row)
                     max_column_index = row.index(max_value)
-                    columns = ['Duration_Eyes_Closed_s', 'Duration_Looking_Left_s', 'Duration_Looking_Right_s', 'Duration_Looking_Straight_s']
+                    columns = ['Duration_Eyes_Closed_s', 'Duration_Looking_Left_s', 'Duration_Looking_Right_s',
+                               'Duration_Looking_Straight_s']
                     max_column = columns[max_column_index]
                     datalist.append(max_column)
 
@@ -419,7 +432,8 @@ def get_weekly_data():
                     focussed += 1
                 elif 'Looking_Down_s' in datalist or 'Duration_Eyes_Closed_s' in datalist or 'Angry_s' in datalist or 'Fear_s' in datalist or 'Surprise_s' in datalist:
                     not_focussed += 1
-                elif 'Looking_Forward_s' in datalist and ('Duration_Looking_Left_s' in datalist or 'Duration_Looking_Right_s' in datalist):
+                elif 'Looking_Forward_s' in datalist and (
+                        'Duration_Looking_Left_s' in datalist or 'Duration_Looking_Right_s' in datalist):
                     not_focussed += 1
                 elif 'Sad_s' in datalist and 'Duration_Eyes_Closed_s' in datalist:
                     not_focussed += 1
@@ -445,7 +459,6 @@ def get_weekly_data():
         return jsonify({'error': str(e)})
 
 
-
 @app.route('/video_feed')
 def video_feed():
     from video_monitor import generate_frames  # Import inside the function to avoid circular import
@@ -460,6 +473,7 @@ def generate_userid_QA():
     if user_id is None:
         return jsonify({'status': 'FAILURE', 'code': '500', 'message': 'User ID could not be generated.'})
     return jsonify({'status': 'SUCCESS', 'code': '200 OK', 'user_id': user_id})
+
 
 if __name__ == '__main__':
     print("Starting the app...")
