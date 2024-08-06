@@ -465,15 +465,3 @@ body.dark-mode {
     background-color: #333333;
     color: #ffffff;
 }
-
-/* Pride mode */
-body.pride-mode {
-    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
-    color: #ffffff;
-}
-
-.header.pride-mode,
-.footer.pride-mode {
-    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
-    color: #ffffff;
-}
