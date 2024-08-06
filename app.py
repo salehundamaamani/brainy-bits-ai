@@ -1,3 +1,4 @@
+import os
 from datetime import date
 
 from flask import Flask, request, redirect, render_template, Response, jsonify, url_for
@@ -8,6 +9,10 @@ from flask_wtf.csrf import CSRFProtect
 app = Flask(__name__)
 app.secret_key = 'forcontactus'
 csrf = CSRFProtect(app)
+
+EMAIL_JS_PUBLIC_KEY = os.environ.get('EMAIL_JS_PUBLIC_KEY')
+EMAIL_JS_TEMPLATE_ID = os.environ.get('EMAIL_JS_TEMPLATE_ID')
+EMAIL_JS_SERVICE_ID = os.environ.get('EMAIL_JS_SERVICE_ID')
 
 
 @app.route('/init_database', methods=['GET'])
@@ -68,15 +73,7 @@ def advertise():
 
 @app.route('/contact_us', methods=['GET', 'POST'])
 def contact_us():
-    if request.method == 'POST':
-        # Process the form data here
-        # name = request.form.get('name')
-        # email = request.form.get('email')
-        # message = request.form.get('message')
-
-        # After processing, redirect or respond accordingly
-        return redirect(url_for('contact_us'))  # Or any other relevant route
-    return render_template('contact_us.html')
+    return render_template('contact_us.html', emailjs_public_key=EMAIL_JS_PUBLIC_KEY, emailjs_service_id=EMAIL_JS_SERVICE_ID, emailjs_template_id=EMAIL_JS_TEMPLATE_ID)
 
 
 @app.route('/team_details')
