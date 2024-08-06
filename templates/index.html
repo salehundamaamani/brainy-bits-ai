@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="video-container">
-    <video id="dynamicVideo" autoplay muted>
-        <source src="{{ url_for('static', filename='Welcome.mp4') }}" type="video/mp4">
+    <video id="dynamicVideo" autoplay muted loop playsinline>
+        <source id="videoSource" src="{{ url_for('static', filename='Welcome.mp4') }}" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 </div>
