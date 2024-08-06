@@ -5,6 +5,7 @@ html, body {
     overflow: auto; /* Allow scrolling */
 }
 
+
 body {
     font-family: 'Roboto', Arial, sans-serif;
     display: flex;
@@ -12,6 +13,7 @@ body {
     align-items: center;
     min-height: 100vh; /* Ensure the body takes full height of the viewport */
 }
+
 
 .header {
     background-color: #ffffff;
@@ -25,10 +27,12 @@ body {
     height: 60px; /* Set a fixed height for the header */
 }
 
+
 .logo-container {
     display: flex;
     align-items: center;
 }
+
 
 .header img {
     height: 50px;
@@ -37,6 +41,7 @@ body {
     border-radius: 5px;
 }
 
+
 .header h1 {
     margin: 0;
     font-size: 24px;
@@ -44,55 +49,44 @@ body {
     color: inherit;  /* Ensure the text color matches the theme */
 }
 
+
 .header nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
-
-    gap: 5px;  /* Reduced gap between items */
-}
-
-.header nav ul li {
-    margin-left: 0;  /* Removed extra margin */
-}
-
-.header nav ul li a {
-    color: #ffffff;
-
     gap: 15px;  /* Added gap between items */
     color: inherit;  /* Ensure the text color matches the theme */
 }
+
 
 .header nav ul li {
     margin-left: 10px;
 }
 
+
 .header nav ul li a {
     color: inherit;  /* Ensure the text color matches the theme */
-
     text-decoration: none;
     font-size: 16px;
     transition: background-color 0.3s, color 0.3s;
     padding: 10px 20px;
     border-radius: 5px;
-    background-color: #003366;  /* Dark blue button background color */
-    border: 1px solid #003366;  /* Dark blue button border */
 }
 
-.header nav ul li a:hover {
 
-    background-color: #002244;  /* Darker blue background on hover */
-    color: #ffffff;
+.header nav ul li a:hover {
     background-color: #eeeeee;  /* Light background on hover */
     color: inherit;  /* Ensure the text color matches the theme */
 }
+
 
 .mode-slider {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+
 
 .theme-labels {
     display: flex;
@@ -101,10 +95,12 @@ body {
     margin-bottom: 5px;
 }
 
+
 .theme-labels span {
     font-size: 14px;
     font-weight: 600;
 }
+
 
 .mode-slider input[type="range"] {
     width: 150px; /* Increased width */
@@ -119,6 +115,7 @@ body {
     background-size: cover;
 }
 
+
 .mode-slider input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -132,6 +129,7 @@ body {
     transition: background .15s ease-in-out, transform .15s ease-in-out; /* Added transition for transform */
 }
 
+
 .mode-slider input[type="range"]::-moz-range-thumb {
     width: 30px; /* Adjusted width */
     height: 30px; /* Adjusted height */
@@ -143,11 +141,12 @@ body {
     transition: background .15s ease-in-out, transform .15s ease-in-out; /* Added transition for transform */
 }
 
+
 .mode-slider input[type="range"]:hover::-webkit-slider-thumb,
 .mode-slider input[type="range"]:hover::-moz-range-thumb {
     transform: scale(1.1); /* Slightly increase size on hover */
-
 }
+
 
 .content {
     flex: 1;
@@ -156,6 +155,7 @@ body {
     align-items: center;
     width: 100%;
 }
+
 
 .content video {
     width: 100%;
@@ -167,6 +167,7 @@ body {
     height: 100%;
     margin: auto;
 }
+
 
 .video-container video {
     width: 100%;
@@ -189,12 +190,14 @@ body {
     margin-top: auto; /* Push the footer to the bottom */
 }
 
+
 .footer .container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
+
 
 .footer .row {
     display: flex;
@@ -203,9 +206,11 @@ body {
     margin: 0;
 }
 
+
 .footer-section {
     margin: 10px;
 }
+
 
 .footer-heading {
     margin-bottom: 10px;
@@ -213,11 +218,13 @@ body {
     color: inherit;  /* Ensure headings are readable */
 }
 
+
 .footer-links {
     margin: 5px 0;
     font-weight: 400;
     color: inherit;  /* Ensure the text color matches the theme */
 }
+
 
 .footer-links a {
     color: inherit;  /* Ensure the text color matches the theme */
@@ -227,9 +234,11 @@ body {
     font-size: 16px;
 }
 
+
 .footer-links a:hover {
     color: #007bff;
 }
+
 
 .footer-bottom {
     width: 100%;
@@ -239,6 +248,7 @@ body {
     color: inherit;
 }
 
+
 .social-icon {
     font-size: 24px;
     margin: 0 10px;
@@ -246,9 +256,11 @@ body {
     transition: color 0.3s;
 }
 
+
 .social-icon:hover {
     color: #007bff;
 }
+
 
 /* About Us Page Styles */
 .about-us {
@@ -259,6 +271,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
+
 .about-heading {
     font-size: 2.5em;
     margin-bottom: 20px;
@@ -267,12 +280,14 @@ body {
     animation: fadeInDown 1s ease-in-out;
 }
 
+
 .about-us p {
     font-size: 1.1em;
     line-height: 1.6;
     margin-bottom: 20px;
     animation: fadeIn 1.5s ease-in-out;
 }
+
 
 .about-us a {
     color: #0056b3;
@@ -281,9 +296,11 @@ body {
     transition: color 0.3s;
 }
 
+
 .about-us a:hover {
     color: #003d7a;
 }
+
 
 .about-us h3 {
     margin-top: 30px;
@@ -293,29 +310,36 @@ body {
 }
 
 
+
+
 .text-primary-custom {
     color: #B1B9C1; /* Adjust the color as necessary */
 }
+
 
 .animated-title {
     color: #0056b3;
     animation: fadeInDown 1s ease-in-out;
 }
 
+
 .team-intro {
     margin-bottom: 30px;
     animation: fadeIn 1.5s ease-in-out;
 }
+
 
 .team-member {
     animation: fadeInUp 2s ease-in-out;
     margin-bottom: 20px;
 }
 
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
 
 @keyframes fadeInDown {
     from {
@@ -328,6 +352,7 @@ body {
     }
 }
 
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -339,6 +364,7 @@ body {
     }
 }
 
+
 .contact-page {
     display: flex;
     justify-content: center;
@@ -347,6 +373,7 @@ body {
     padding: 20px;
     background-color: #f9f9f9;
 }
+
 
 .contact-form {
     width: 100%;
@@ -358,6 +385,7 @@ body {
     animation: fadeInUp 1s ease-in-out;
 }
 
+
 .contact-form h2 {
     color: #0056b3;
     font-size: 2.5em;
@@ -366,9 +394,11 @@ body {
     animation: fadeInDown 1s ease-in-out;
 }
 
+
 .contact-form .form-group {
     margin-bottom: 20px;
 }
+
 
 .contact-form .form-control {
     border-radius: 4px;
@@ -377,15 +407,18 @@ body {
     transition: border-color 0.3s;
 }
 
+
 .contact-form .form-control:focus {
     border-color: #0056b3;
     box-shadow: none;
 }
 
+
 .contact-form .button-container {
     display: flex;
     justify-content: center; /* Center the button */
 }
+
 
 .contact-form button {
     background-color: #0056b3;
@@ -397,9 +430,11 @@ body {
     transition: background-color 0.3s;
 }
 
+
 .contact-form button:hover {
     background-color: #003d7a;
 }
+
 
 @keyframes fadeInDown {
     from {
@@ -412,6 +447,7 @@ body {
     }
 }
 
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -423,6 +459,7 @@ body {
     }
 }
 
+
 .contact-form {
     background-color: rgba(255, 255, 255, 0.9); /* Adding transparency to see the background */
     padding: 30px;
@@ -430,6 +467,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     animation: fadeInUp 1s ease-in-out;
 }
+
 
 /*Dashboard page configuration*/
 .chart-container {
@@ -440,6 +478,7 @@ body {
     padding: 0 10%;
 }
 
+
 .chart {
     flex: 1;
     min-width: 300px;
@@ -448,10 +487,12 @@ body {
     margin-bottom: 20px;
 }
 
+
 .pie-chart {
     width: 100%;
     height: auto;
 }
+
 
 .line-chart-container {
     width: 80%;
@@ -465,11 +506,13 @@ body.light-mode {
     color: #333333;
 }
 
+
 .header.light-mode,
 .footer.light-mode {
     background-color: #ffffff;
     color: #333333;
 }
+
 
 /* Dark mode */
 body.dark-mode {
@@ -477,17 +520,20 @@ body.dark-mode {
     color: #ffffff;
 }
 
+
 .header.dark-mode,
 .footer.dark-mode {
     background-color: #333333;
     color: #ffffff;
 }
 
+
 /* Pride mode */
 body.pride-mode {
     background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
     color: #ffffff;
 }
+
 
 .header.pride-mode,
 .footer.pride-mode {
