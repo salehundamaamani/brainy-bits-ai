@@ -554,3 +554,135 @@ body.pride-mode {
     margin-bottom: 15px;
     border: 2px solid #333; /* Optional: Add a border for better visual separation */
 }
+
+
+
+.login-card {
+    background: rgba(255, 255, 255, 0.95); /* Light background for readability */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    border: 1px solid #ccc; /* Optional */
+}
+
+.form-control {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px; /* Spacing between fields */
+    height: 40px; /* Increased height for better focus */
+}
+
+.btn-primary {
+    background-color: #0056b3; /* A deeper blue */
+    border-color: #004085;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    width: 100%; /* Full-width button */
+    transition: background-color 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #004085; /* Darken button on hover */
+}
+
+/* Enhance focus on active inputs */
+.form-control:focus {
+    border-color: #66afe9;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+/* Additional links style */
+a.text-small {
+    display: block; /* Makes the links easier to click */
+    margin-top: 10px;
+    color: #0056b3; /* Matching the button color */
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .login-card {
+        margin: 10px; /* Less margin on smaller screens */
+    }
+}
+
+.login-card {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.registration-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+.registration-card .form-control {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    height: 40px;
+}
+
+.registration-card .btn-primary {
+    background-color: #0056b3;
+    border-color: #004085;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    width: 100%;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.registration-card .btn-primary:hover {
+    background-color: #004085;
+}
+
+.registration-card .form-control:focus {
+    border-color: #66afe9;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+.registration-card a.text-small {
+    display: block;
+    margin-top: 10px;
+    color: #0056b3;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .registration-card {
+        margin: 10px;
+    }
+}
+
+.video-container {
+    text-align: center; /* Center the video feed */
+}
+
+.btn {
+    display: block;
+    width: 200px; /* Specific width for better control */
+    margin: 20px auto; /* Auto margins for horizontal centering */
+    text-align: center; /* Ensures the text within the button is centered */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers children horizontally in the flex container */
+    justify-content: center; /* Centers children vertically in the flex container */
+}
+
