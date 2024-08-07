@@ -95,71 +95,57 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
     <script>
-        function setMode(mode) {
-            document.body.classList.remove('light-mode', 'dark-mode', 'pride-mode');
-            document.body.classList.add(mode);
+    function setMode(mode) {
+        document.body.classList.remove('light-mode', 'dark-mode', 'pride-mode');
+        document.body.classList.add(mode);
 
-            document.querySelector('.header').classList.remove('light-mode', 'dark-mode', 'pride-mode');
-            document.querySelector('.header').classList.add(mode);
+        document.querySelector('.header').classList.remove('light-mode', 'dark-mode', 'pride-mode');
+        document.querySelector('.header').classList.add(mode);
 
-            document.querySelector('.footer').classList.remove('light-mode', 'dark-mode', 'pride-mode');
-            document.querySelector('.footer').classList.add(mode);
+        document.querySelector('.footer').classList.remove('light-mode', 'dark-mode', 'pride-mode');
+        document.querySelector('.footer').classList.add(mode);
 
-            // Change text and link colors for visibility
-            const header = document.getElementById('header');
-            const title = document.getElementById('title');
-            const navLinks = document.getElementById('nav-links');
-            const footer = document.getElementById('footer');
+        localStorage.setItem('theme', mode); // Save theme to localStorage
+    }
 
-            if (mode === 'dark-mode') {
-                header.style.backgroundColor = '#0D224A';
-                header.style.color = '#fff';
-                title.style.color = '#fff';
-                navLinks.style.color = '#fff';
-                footer.style.backgroundColor = '#0D224A';
-                footer.style.color = '#fff';
-            } else if (mode === 'light-mode') {
-                header.style.backgroundColor = '#0D224A';
-                header.style.color = '#fff';
-                title.style.color = '#333';
-                navLinks.style.color = '#333';
-                footer.style.backgroundColor = '#0D224A';
-                footer.style.color = '#fff';
-            } else if (mode === 'pride-mode') {
-                header.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
-                header.style.color = '#fff';
-                title.style.color = '#fff';
-                navLinks.style.color = '#fff';
-                footer.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
-                footer.style.color = '#fff';
-            }
+    function updateThumbIcon(value) {
+        const themeSlider = document.getElementById('theme-slider');
+        if (value == '1') {
+            themeSlider.style.setProperty('--thumb-image', 'url(/static/sun.png)');
+        } else if (value == '2') {
+            themeSlider.style.setProperty('--thumb-image', 'url(/static/moon.png)');
+        } else if (value == '3') {
+            themeSlider.style.setProperty('--thumb-image', 'url(/static/pride.png)');
         }
+    }
 
-        function updateThumbIcon(value) {
-            const themeSlider = document.getElementById('theme-slider');
-            if (value == '1') {
-                themeSlider.style.setProperty('--thumb-image', 'url(/static/sun.png)');
-            } else if (value == '2') {
-                themeSlider.style.setProperty('--thumb-image', 'url(/static/moon.png)');
-            } else if (value == '3') {
-                themeSlider.style.setProperty('--thumb-image', 'url(/static/pride.png)');
+    document.addEventListener('DOMContentLoaded', function () {
+        const themeSlider = document.getElementById('theme-slider');
+        const savedTheme = localStorage.getItem('theme'); // Get theme from localStorage
+
+        if (savedTheme) {
+            setMode(savedTheme); // Apply saved theme
+            if (savedTheme === 'light-mode') {
+                themeSlider.value = '1';
+            } else if (savedTheme === 'dark-mode') {
+                themeSlider.value = '2';
+            } else if (savedTheme === 'pride-mode') {
+                themeSlider.value = '3';
             }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const themeSlider = document.getElementById('theme-slider');
             updateThumbIcon(themeSlider.value);
-            themeSlider.addEventListener('input', function () {
-                updateThumbIcon(themeSlider.value);
-                if (themeSlider.value == '1') {
-                    setMode('light-mode');
-                } else if (themeSlider.value == '2') {
-                    setMode('dark-mode');
-                } else if (themeSlider.value == '3') {
-                    setMode('pride-mode');
-                }
-            });
+        }
+
+        themeSlider.addEventListener('input', function () {
+            updateThumbIcon(themeSlider.value);
+            if (themeSlider.value == '1') {
+                setMode('light-mode');
+            } else if (themeSlider.value == '2') {
+                setMode('dark-mode');
+            } else if (themeSlider.value == '3') {
+                setMode('pride-mode');
+            }
         });
-    </script>
+    });
+</script>
 </body>
 </html>
