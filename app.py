@@ -1,7 +1,8 @@
 import os
 from datetime import date
 
-from flask import Flask, request, redirect, render_template, Response, jsonify, url_for
+import requests
+from flask import Flask, request, redirect, render_template, Response, jsonify, url_for, flash
 from config import logger
 from db_utils import create_database_tables
 from flask_wtf.csrf import CSRFProtect
@@ -44,6 +45,50 @@ def classroom_monitoring():
 def dashboard():
     logger.debug("Rendering dashboard page.")
     return render_template('dashboard.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        recaptcha_response = request.form.get('g-recaptcha-response')
+
+        # Verify reCAPTCHA
+        secret_key = '6LdIByEqAAAAAEhZp-X35Hdqe3lpUEFOYyxn1Jca'
+        recaptcha_data = {
+            'secret': secret_key,
+            'response': recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=recaptcha_data)
+        result = r.json()
+
+        if result['success']:
+            # Add your logic to verify the user's credentials
+                # Logic after successful login
+            return redirect(url_for('dashboard'))
+
+        else:
+            flash('Invalid reCAPTCHA. Please try again.', 'danger')
+
+    return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        if password != confirm_password:
+            flash('Passwords do not match!', 'danger')
+            return render_template('register.html')
+
+        # Proceed with registration process
+        # Your logic to handle registration here
+
+    return render_template('register.html')
+
 
 
 @app.route('/socials')

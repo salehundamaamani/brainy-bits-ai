@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In{% endblock %}
+
+{% block content %}
+<div class="container mt-10">
+    <div class="row justify-content-center">
+        <div class="col-md-30">
+            <div class="card login-card">
+                <div class="card-body">
+                    <h2 class="text-center">Sign In</h2>
+                    <form method="POST" action="{{ url_for('login') }}" class="mt-4">
+                        <div class="form-group">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fa fa-user"></i></span>
+        </div>
+        <input type="text" class="form-control" id="email" name="email" placeholder="Email or mobile number" required>
+    </div>
+</div>
+<div class="form-group">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        </div>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+    </div>
+</div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                        <div class="text-center mt-3">
+                            <a href="#" class="text-small">Use a Sign-In Code</a>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+                            <label class="form-check-label" for="remember_me">Remember me</label>
+                        </div>
+                    </form>
+                    <hr>
+                    <p class="text-center">New to Brainy Bits? <a href="{{ url_for('register') }}">Sign up now.</a></p>
+                    <!-- ReCAPTCHA script -->
+                    <div class="g-recaptcha" data-sitekey="6LdIByEqAAAAAHdq1R_A4eCE3upK2nBuyxrA1ns1"></div>
+
+                    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfMmSAqAAAAAGN8VYAi5XlzTAbuiCmcynPcnk16"></script>
+                    <script>
+  function onClick(e) {
+    e.preventDefault();
+    grecaptcha.enterprise.ready(async () => {
+      const token = await grecaptcha.enterprise.execute('6LfMmSAqAAAAAGN8VYAi5XlzTAbuiCmcynPcnk16', {action: 'LOGIN'});
+    });
+  }
+</script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

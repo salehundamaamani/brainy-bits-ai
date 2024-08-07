@@ -1,7 +1,40 @@
 {% extends "base.html" %}
 {% block title %}Classroom Monitoring{% endblock %}
+
 {% block content %}
-<div class="video-container">
-    <img src="{{ url_for('video_feed') }}" width="1024" height="640" alt="Video Feed">
+<div class="container mt-3">
+    <div class="video-container">
+        <!-- img tag can only display images, use a div or video tag if video feed is not an image sequence -->
+        <img id="videoFeed" src="{{ url_for('video_feed') }}" width="1024" height="640" alt="Video Feed">
+    </div>
+    <button id="toggleVideo" class="btn btn-danger mt-3">Stop Video</button>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const videoFeed = document.getElementById('videoFeed');
+    const toggleVideoButton = document.getElementById('toggleVideo');
+
+    let videoPlaying = true;
+    toggleVideoButton.onclick = function() {
+        if (videoPlaying) {
+            videoFeed.src = "{{ url_for('static', filename='class.gif') }}"; // Change to SVG when stopping the video
+            videoFeed.width = "512"
+            videoFeed.height = "400"
+            toggleVideoButton.textContent = 'Start Video';
+            toggleVideoButton.classList.remove('btn-danger');
+            toggleVideoButton.classList.add('btn-success');
+        } else {
+            videoFeed.src = '';
+            videoFeed.src = "{{ url_for('video_feed') }}"; // Restart the video feed
+            videoFeed.width = "1024"
+            videoFeed.height = "640"
+            toggleVideoButton.textContent = 'Stop Video';
+            toggleVideoButton.classList.remove('btn-success');
+            toggleVideoButton.classList.add('btn-danger');
+        }
+        videoPlaying = !videoPlaying;
+    };
+});
+</script>
 {% endblock %}
