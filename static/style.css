@@ -178,6 +178,7 @@ body {
     border-radius: 10%;
     padding: 10px;
 }
+/*Footer Section*/
 .footer {
     background-color: #0D224A;
     color: #ffffff;
@@ -190,8 +191,13 @@ body {
     flex-wrap: wrap;
     position: relative; /* Ensure it covers the full area */
     margin-top: auto; /* Push the footer to the bottom */
+    transition: background-color 0.3s, color 0.3s;
 }
 
+.footer:hover {
+    background-color: #002d72;
+    color: #ffffff;
+}
 
 .footer .container {
     display: flex;
@@ -214,10 +220,11 @@ body {
 }
 
 
-.footer-heading {
+.footer .footer-heading {
     margin-bottom: 10px;
     font-weight: 700;
     color: inherit;  /* Ensure headings are readable */
+    transition: color 0.3s;
 }
 
 
@@ -228,26 +235,29 @@ body {
 }
 
 
-.footer-links a {
+.footer .footer-links a {
     color: inherit;  /* Ensure the text color matches the theme */
     text-decoration: none;
     display: inline-block;
     margin: 5px;
     font-size: 16px;
+    transition: color 0.3s, transform 0.3s;
 }
 
 
-.footer-links a:hover {
+.footer .footer-links a:hover {
     color: #007bff;
+    transform: translateY(-3px); /* Slightly raise the link on hover */
 }
 
 
-.footer-bottom {
+.footer .footer-bottom {
     width: 100%;
     text-align: center;
     margin-top: 10px;
     font-weight: 400;
     color: inherit;
+    transition: color 0.3s;
 }
 
 
@@ -255,14 +265,13 @@ body {
     font-size: 24px;
     margin: 0 10px;
     color: inherit;  /* Ensure the text color matches the theme */
-    transition: color 0.3s;
+    transition: color 0.3s, transform 0.3s;
 }
-
 
 .social-icon:hover {
     color: #007bff;
+    transform: scale(1.2); /* Enlarge icon slightly on hover */
 }
-
 
 /* About Us Page Styles */
 .about-us {
