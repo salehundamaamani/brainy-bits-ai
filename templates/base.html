@@ -40,8 +40,6 @@
     </div>
     <div class="content">
         {% block content %}
-        <!-- Add your video element here -->
-        <video src="path/to/your/video.mp4" controls></video>
         {% endblock %}
     </div>
     <br>
@@ -94,7 +92,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
-    <script>
+      <script>
         function setMode(mode) {
             document.body.classList.remove('light-mode', 'dark-mode', 'pride-mode');
             document.body.classList.add(mode);
@@ -104,6 +102,19 @@
 
             document.querySelector('.footer').classList.remove('light-mode', 'dark-mode', 'pride-mode');
             document.querySelector('.footer').classList.add(mode);
+
+            const video = document.getElementById('dynamicVideo');
+            const videoSource = document.getElementById('videoSource');
+
+            if (mode === 'dark-mode') {
+                videoSource.src = "{{ url_for('static', filename='Welcome_Dark_Mode.mp4') }}";
+            } else if (mode === 'light-mode') {
+                videoSource.src = "{{ url_for('static', filename='Welcome.mp4') }}";
+            } else if (mode === 'pride-mode') {
+                videoSource.src = "{{ url_for('static', filename='Welcome_Pride.mp4') }}";
+            }
+
+            video.load();
 
             // Change text and link colors for visibility
             const header = document.getElementById('header');
@@ -127,21 +138,21 @@
                 footer.style.color = '#fff';
             } else if (mode === 'pride-mode') {
                 header.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
-                header.style.color = '#fff';
+                header.style.color = '#000';
                 title.style.color = '#fff';
                 navLinks.style.color = '#fff';
                 footer.style.backgroundColor = 'linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)';
-                footer.style.color = '#fff';
+                footer.style.color = '#000';
             }
         }
 
         function updateThumbIcon(value) {
             const themeSlider = document.getElementById('theme-slider');
-            if (value == '1') {
+            if (value === '1') {
                 themeSlider.style.setProperty('--thumb-image', 'url(/static/sun.png)');
-            } else if (value == '2') {
+            } else if (value === '2') {
                 themeSlider.style.setProperty('--thumb-image', 'url(/static/moon.png)');
-            } else if (value == '3') {
+            } else if (value === '3') {
                 themeSlider.style.setProperty('--thumb-image', 'url(/static/pride.png)');
             }
         }

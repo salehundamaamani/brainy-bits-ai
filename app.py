@@ -6,10 +6,8 @@ from flask import Flask, request, redirect, render_template, Response, jsonify, 
 from config import logger
 from db_utils import create_database_tables, get_db_connection
 from flask_wtf.csrf import CSRFProtect
-from flask_caching import Cache
 
 app = Flask(__name__)
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 app.secret_key = 'forcontactus'
 csrf = CSRFProtect(app)
 
@@ -264,7 +262,7 @@ def fetch_focus_data():
     }
 
 
-@cache.cached(timeout=600)
+
 @app.route('/get_data')
 def get_data():
     logger.debug("Entering get_data method")
@@ -277,7 +275,6 @@ def get_data():
         return jsonify({'error': str(e)})
 
 
-@cache.cached(timeout=600)
 def fetch_focus_data_today():
     from db_utils import get_db_connection
     conn = get_db_connection()
