@@ -533,7 +533,7 @@ body.dark-mode {
 
 /* Pride mode */
 body.pride-mode {
-    background: #dbdfc0;
+    background: linear-gradient(90deg, #FFB3BA, #FFDFBA, #FFFFBA, #BAFFC9, #BAE1FF, #D1BAFF, #FFB3E4);
     color: #333333; /* Darker text for better readability */
 }
 

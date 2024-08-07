@@ -10,6 +10,7 @@
                 <div class="card-body">
                     <h2 class="text-center">Sign In</h2>
                     <form method="POST" action="{{ url_for('login') }}" class="mt-4">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="form-group">
     <div class="input-group">
         <div class="input-group-prepend">

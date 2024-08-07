@@ -1,13 +1,15 @@
 import os
-from datetime import date
+from datetime import date, datetime
 
 import requests
-from flask import Flask, request, redirect, render_template, Response, jsonify, url_for, flash
+from flask import Flask, request, redirect, render_template, Response, jsonify, url_for, flash, session
 from config import logger
-from db_utils import create_database_tables
+from db_utils import create_database_tables, get_db_connection
 from flask_wtf.csrf import CSRFProtect
+from flask_caching import Cache
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 app.secret_key = 'forcontactus'
 csrf = CSRFProtect(app)
 
@@ -46,13 +48,19 @@ def dashboard():
     logger.debug("Rendering dashboard page.")
     return render_template('dashboard.html')
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
         recaptcha_response = request.form.get('g-recaptcha-response')
+        connection = get_db_connection()
+        db_cursor = connection.cursor()
 
+        db_cursor.execute('SELECT password FROM user_data WHERE email = %s', (email,))
+        password_from_db = db_cursor.fetchone()
+        logger.info(f"password {password_from_db[0]}")
         # Verify reCAPTCHA
         secret_key = '6LdIByEqAAAAAEhZp-X35Hdqe3lpUEFOYyxn1Jca'
         recaptcha_data = {
@@ -61,16 +69,20 @@ def login():
         }
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=recaptcha_data)
         result = r.json()
+        connection.commit()
+        connection.close()
 
-        if result['success']:
-            # Add your logic to verify the user's credentials
-                # Logic after successful login
-            return redirect(url_for('dashboard'))
-
+        if password_from_db and password_from_db[0] == password:
+            logger.info(f"PASS SUCCESS")
+            session['logged_in'] = True
+            session['email'] = email
+            return redirect(url_for('home'))
         else:
-            flash('Invalid reCAPTCHA. Please try again.', 'danger')
+            flash('Invalid Login details. Please try again.', 'danger')
+
 
     return render_template('login.html')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -83,12 +95,30 @@ def register():
         if password != confirm_password:
             flash('Passwords do not match!', 'danger')
             return render_template('register.html')
-
-        # Proceed with registration process
-        # Your logic to handle registration here
+        connection = get_db_connection()
+        db_cursor = connection.cursor()
+        db_cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS user_data (
+                        username VARCHAR(80) NOT NULL,
+                        email VARCHAR(120) NOT NULL,
+                        password VARCHAR(128) NOT NULL,
+                        created_at DATE NULL,
+                        UNIQUE (username),
+                        UNIQUE (email)
+                    )
+                ''')
+        logger.info('user_data table created.')
+        db_cursor.execute('''
+                            INSERT INTO user_data (username, email, password, created_at)
+                            VALUES (%s, %s, %s, %s)
+                        ''', (username, email, password, datetime.now().date()))
+        logger.info(f"Inserted user_data details for {username}")
+        connection.commit()
+        connection.close()
+        flash('Registration successful!', 'success')
+        return redirect(url_for('login'))
 
     return render_template('register.html')
-
 
 
 @app.route('/socials')
@@ -118,7 +148,8 @@ def advertise():
 
 @app.route('/contact_us', methods=['GET', 'POST'])
 def contact_us():
-    return render_template('contact_us.html', emailjs_public_key=EMAIL_JS_PUBLIC_KEY, emailjs_service_id=EMAIL_JS_SERVICE_ID, emailjs_template_id=EMAIL_JS_TEMPLATE_ID)
+    return render_template('contact_us.html', emailjs_public_key=EMAIL_JS_PUBLIC_KEY,
+                           emailjs_service_id=EMAIL_JS_SERVICE_ID, emailjs_template_id=EMAIL_JS_TEMPLATE_ID)
 
 
 @app.route('/team_details')
@@ -233,6 +264,7 @@ def fetch_focus_data():
     }
 
 
+@cache.cached(timeout=600)
 @app.route('/get_data')
 def get_data():
     logger.debug("Entering get_data method")
@@ -245,6 +277,7 @@ def get_data():
         return jsonify({'error': str(e)})
 
 
+@cache.cached(timeout=600)
 def fetch_focus_data_today():
     from db_utils import get_db_connection
     conn = get_db_connection()
@@ -516,6 +549,12 @@ def generate_userid_QA():
         return jsonify({'status': 'FAILURE', 'code': '500', 'message': 'User ID could not be generated.'})
     return jsonify({'status': 'SUCCESS', 'code': '200 OK', 'user_id': user_id})
 
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    session.pop('email', None)
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     print("Starting the app...")

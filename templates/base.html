@@ -18,9 +18,15 @@
                 {% if request.endpoint != 'home' %}
                 <li><a href="{{ url_for('home') }}">Home</a></li>
                 {% endif %}
+                 {% if session.get('logged_in') %}
                 <li><a href="{{ url_for('classroom_monitoring') }}">Classroom Monitoring</a></li>
+                 {% endif %}
                 <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('login') }}">Login/Register</a> </li>
+                 {% if not session.get('logged_in') %}
+                <li><a href="{{ url_for('login') }}">Login/Register</a></li>
+                {% else %}
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% endif %}
                 <li>
                     <div class="mode-slider">
                         <div class="theme-labels">
