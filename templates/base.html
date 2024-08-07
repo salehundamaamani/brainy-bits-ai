@@ -20,6 +20,7 @@
                 {% endif %}
                 <li><a href="{{ url_for('classroom_monitoring') }}">Classroom Monitoring</a></li>
                 <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('login') }}">Login/Register</a> </li>
                 <li>
                     <div class="mode-slider">
                         <div class="theme-labels">
@@ -37,6 +38,8 @@
         <video src="path/to/your/video.mp4" controls></video>
         {% endblock %}
     </div>
+    <br>
+    <br>
     <footer class="footer bg-primary-custom text-center py-4 mt-auto glass" id="footer">
         <div class="container">
             <div class="row">
@@ -133,7 +136,7 @@
             } else if (value == '2') {
                 themeSlider.style.setProperty('--thumb-image', 'url(/static/moon.png)');
             } else if (value == '3') {
-                themeSlider.style.setProperty('--thumb-image', 'url(/static/gayrehaan.png)');
+                themeSlider.style.setProperty('--thumb-image', 'url(/static/pride.png)');
             }
         }
 
