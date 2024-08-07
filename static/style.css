@@ -78,7 +78,7 @@ body {
 
 .header nav ul li a:hover {
     background-color: #eeeeee;  /* Light background on hover */
-    color: inherit;  /* Ensure the text color matches the theme */
+    color: black;  /* Ensure the text color matches the theme */
 }
 
 
@@ -86,12 +86,14 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-right: 10px;
+
 }
 
 
 .theme-labels {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     width: 70px; /* Same width as the slider */
     margin-bottom: 5px;
 }
@@ -553,4 +555,3 @@ body.pride-mode {
     margin-bottom: 15px;
     border: 2px solid #333; /* Optional: Add a border for better visual separation */
 }
-
